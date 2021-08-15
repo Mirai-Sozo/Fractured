@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>idc</title>
+	<script src="js/lib/break_infinity.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	<script src="js/core/noise.js"></script>
+	<script src="js/core/player.js"></script>
+	<script src="js/core/game_loop.js"></script>
+	<script src="js/lib/notifier.js"></script>
+	<script src="js/core/canvas.js"></script>
+	<script src="js/vue/app.js"></script>
+	<script src="js/number_formatting.js"></script>
+	<script src="js/core/load.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css"/>
+</head>
+<body onload="load()">
+	<div id="app">
+		<notifier-container></notifier-container>
+		<canvas id="c"></canvas>
+	</div>
+</body>
+</html>
