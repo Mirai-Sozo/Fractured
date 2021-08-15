@@ -23,7 +23,8 @@ function Lerp(noise, interval) {
 	let lerpY = [], lerpYPrim = [];
 	let h = noise[0].length*interval - interval;
 
-	let c = Math.PI/(2*interval)
+	let c = Math.PI/(2*interval);
+	let cAlt = 1/interval;
 
 	for (let i = 0; i < noise.length; i++) {
 		lerpXPrim.push([]);
@@ -31,7 +32,7 @@ function Lerp(noise, interval) {
 			let lerpPos = j%interval;
 			if (lerpPos == 0) lerpXPrim[i][j] = noise[i][j/interval];
 			else {
-				lerpXPrim[i][j] = noise[i][Math.floor(j/interval)]*Math.cos(lerpPos/c) + noise[i][Math.ceil(j/interval)]*Math.sin(lerpPos/c);
+				lerpXPrim[i][j] = noise[i][Math.floor(j/interval)] + (noise[i][Math.ceil(j/interval)] - noise[i][Math.floor(j/interval)])*Math.sin(lerpPos*c);
 			}
 		}
 	}
@@ -41,7 +42,7 @@ function Lerp(noise, interval) {
 			let lerpPos = j%interval;
 			if (lerpPos == 0) lerpYPrim[i][j] = noise[j/interval][i];
 			else {
-				lerpYPrim[i][j] = noise[Math.floor(j/interval)][i]*Math.cos(lerpPos/c) + noise[Math.ceil(j/interval)][i]*Math.sin(lerpPos/c);
+				lerpYPrim[i][j] = noise[Math.floor(j/interval)][i] + (noise[Math.ceil(j/interval)][i] - noise[Math.floor(j/interval)][i])*Math.sin(lerpPos*c);
 			}
 		}
 	}
@@ -52,9 +53,14 @@ function Lerp(noise, interval) {
 			if (i%interval == 0) lerpX[i][j] = lerpXPrim[i/interval][j];
 			else {
 				let lerpPos = j%interval;
-				if (lerpPos%interval == 0) lerpX[i][j] = lerpYPrim[lerpPos/interval][i];
+				if (lerpPos == 0) {
+					lerpX[i][j] = lerpYPrim[j/interval][i];
+				}
 				else {
-					lerpX[i][j] = lerpYPrim[Math.floor(lerpPos/interval)][i]*Math.cos(lerpPos/c) + lerpYPrim[Math.ceil(lerpPos/interval)][i]*Math.sin(lerpPos/c);
+					lerpX[i][j] = lerpYPrim[Math.floor(j/interval)][i] + (lerpYPrim[Math.ceil(j/interval)][i] - lerpYPrim[Math.floor(j/interval)][i])*Math.sin(lerpPos*c);
+					if (i == 1 && j < 21) {
+						console.log((lerpYPrim[Math.floor(j/interval)][i] + (lerpYPrim[Math.ceil(j/interval)][i] - lerpYPrim[Math.floor(j/interval)][i])*Math.sin(lerpPos*c)).toFixed(3))
+					}
 				}
 			}
 		}
@@ -65,9 +71,9 @@ function Lerp(noise, interval) {
 		for (let j = 0; j <= w; j++) {
 			if (j%interval == 0) lerpY[i][j] = lerpYPrim[j/interval][i];
 			else {
-				if (lerpPos%interval == 0) lerpY[i][j] = lerpXPrim[lerpPos/interval][j];
+				if (lerpPos == 0) lerpY[i][j] = lerpXPrim[i/interval][j];
 				else {
-					lerpY[i][j] = lerpXPrim[Math.floor(lerpPos/interval)][j]*Math.cos(lerpPos/c) + lerpXPrim[Math.ceil(lerpPos/interval)][i]*Math.sin(lerpPos/c);
+					lerpY[i][j] = lerpXPrim[Math.floor(i/interval)][j] + (lerpXPrim[Math.ceil(i/interval)][j] - lerpXPrim[Math.floor(i/interval)][j])*Math.sin(lerpPos*c);
 				}
 			}
 		}
