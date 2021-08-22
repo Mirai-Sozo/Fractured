@@ -6,12 +6,12 @@ let d = 7919;
 let v = 1299709;
 let s = 0;
 
-function Noise(x, y, initMap, scalar=1) {
+function Noise(x, y, scalar=1) {
 	let map = [];
 	for (let i = 0; i < x; i++) {
 		map.push([]);
 		for (let j = 0; j < y; j++) {
-			map[i][j] = randomNoiseBit()*scalar + (initMap && initMap[i] && initMap[i][j] ? initMap[i][j] : 0);
+			map[i][j] = randomNoiseBit()*scalar;
 		}
 	}
 	return map;
@@ -33,9 +33,9 @@ function Lerp(noise, interval) {
 		lerpXPrim.push([]);
 		for (let j = 0; j <= w; j++) {
 			let lerpPos = j%interval;
-			if (lerpPos == 0) lerpXPrim[i][j] = noise[i][j/interval];
+			if (lerpPos == 0) lerpXPrim[i][j] = noise[i][j*c];
 			else {
-				let p = Math.floor(j/interval)
+				let p = Math.floor(j*c);
 				lerpXPrim[i][j] = Lerp1d(noise[i][p], noise[i][p + 1], lerpPos/c);
 			}
 		}
@@ -44,9 +44,9 @@ function Lerp(noise, interval) {
 		lerpYPrim.push([]);
 		for (let j = 0; j <= h; j++) {
 			let lerpPos = j%interval;
-			if (lerpPos == 0) lerpYPrim[i][j] = noise[j/interval][i];
+			if (lerpPos == 0) lerpYPrim[i][j] = noise[j*c][i];
 			else {
-				let p = Math.floor(j/interval)
+				let p = Math.floor(j*c);
 				lerpYPrim[i][j] = Lerp1d(noise[p][i], noise[p + 1][i], lerpPos/c);
 			}
 		}
@@ -55,14 +55,14 @@ function Lerp(noise, interval) {
 	for (let i = 0; i <= h; i++) {
 		lerpX.push([]);
 		for (let j = 0; j <= w; j++) {
-			if (i%interval == 0) lerpX[i][j] = lerpXPrim[i/interval][j];
+			if (i%interval == 0) lerpX[i][j] = lerpXPrim[i*c][j];
 			else {
 				let lerpPos = j%interval;
 				if (lerpPos == 0) {
-					lerpX[i][j] = lerpYPrim[j/interval][i];
+					lerpX[i][j] = lerpYPrim[j*c][i];
 				}
 				else {
-					let p = Math.floor(j/interval)
+					let p = Math.floor(j*c)
 					lerpX[i][j] = Lerp1d(lerpYPrim[p][i], lerpYPrim[p + 1][i], lerpPos/c);
 				}
 			}
@@ -72,11 +72,11 @@ function Lerp(noise, interval) {
 		lerpY.push([]);
 		let lerpPos = i%interval;
 		for (let j = 0; j <= w; j++) {
-			if (j%interval == 0) lerpY[i][j] = lerpYPrim[j/interval][i];
+			if (j%interval == 0) lerpY[i][j] = lerpYPrim[j*c][i];
 			else {
-				if (lerpPos == 0) lerpY[i][j] = lerpXPrim[i/interval][j];
+				if (lerpPos == 0) lerpY[i][j] = lerpXPrim[i*c][j];
 				else {
-					let p = Math.floor(i/interval)
+					let p = Math.floor(i*c)
 					lerpY[i][j] = Lerp1d(lerpYPrim[p][j], lerpYPrim[p + 1][j], lerpPos/c);
 				}
 			}

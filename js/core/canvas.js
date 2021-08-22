@@ -199,11 +199,11 @@ function renderLayer2() {
 				tooltipText(ctx2, x, y, text, "top");
 			}
 		}
-		if (darknessTooltip.length) {
-			let d = darknessTooltip;
-			let [x, y] = getPosInCanvas(d[0], d[1])
-			tooltipText(ctx2, x, y, darknessTooltip[2], "top");
-		}
+	}
+	if (darknessTooltip.length && player.options.showTileU) {
+		let d = darknessTooltip;
+		let [x, y] = getPosInCanvas(d[0], d[1])
+		tooltipText(ctx2, x, y, darknessTooltip[2], "top");
 	}
 }
 

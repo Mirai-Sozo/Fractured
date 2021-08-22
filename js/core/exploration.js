@@ -19,7 +19,7 @@ let EXPLORE = {
 		render();
 	},
 	area(x, y, d) {
-		d = player.currency.shards.min(1.5*d);
+		d = player.currency.shards.min(3*d);
 		let hasTile = 0;
 
 		for (let i = Math.max(0, x - 3); i <= Math.min(600, x + 3); i++) {
@@ -29,7 +29,7 @@ let EXPLORE = {
 					let h = UNEXPLORED_DATA[tile[0]].health;
 					let dist = 0.8 + Math.pow(distGrid([i, j], [x, y]), 2)*0.2;
 
-					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d*2).div(h).div(dist));
+					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d).div(h).div(dist));
 					if (tile[1].lte(0)) {
 						tile[0] = getMapEmpty(i, j);
 						tile[1] = D(1e7);

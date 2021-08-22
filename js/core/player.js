@@ -34,7 +34,8 @@ function getStartPlayer() {
 		},
 		options: {
 			autosave: true,
-			showTilePopups: true
+			showTilePopups: true,
+			showTileU: true
 		}
 	};
 }

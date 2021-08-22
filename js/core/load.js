@@ -80,14 +80,12 @@ function stringDecimal(str) {
 
 	return this.mantissa + "e" + (this.exponent >= 0 ? "+" : "") + this.e;
 }
-${_compress.toString()}
-${compress.toString()}
 function encodeMap(map) {
-	return map.map((r, x) => r.map((p, y) => {return p[0] + ',' + stringDecimal(p[1])}).join(',,')).join(',,,')
+	return map.map((r, x) => r.map((p, y) => {return p[0] + stringDecimal(p[1])}).join(',')).join('#')
 }
 function workerFunc(e) {
 	//console.log(e)
-	postMessage({data: compress(encodeMap(e.data.data))})
+	postMessage({data: encodeMap(e.data.data)})
 }
 
 addEventListener('message', workerFunc)

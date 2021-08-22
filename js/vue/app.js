@@ -59,7 +59,8 @@ function loadVue() {
 			<br>
 			<span style="font-size: 18px">Visuals:</span>
 			<br>
-			<button class="option" onclick="player.options.showTilePopups = !player.options.showTilePopups; renderLayer2();">Show tile tooltips: {{player.options.showTilePopups ? "ON" : "OFF"}}</button>
+			<button class="option" onclick="player.options.showTilePopups = !player.options.showTilePopups; renderLayer2();">Show "Use" tooltips: {{player.options.showTilePopups ? "ON" : "OFF"}}</button>
+			<button class="option" onclick="player.options.showTileU = !player.options.showTileU; renderLayer2();">Show unexplored tile tooltips: {{player.options.showTileU ? "ON" : "OFF"}}</button>
 		</div>`
 	});
 
