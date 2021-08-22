@@ -1,6 +1,6 @@
 function format(num, precision = 2, precisionAfter = 3) {
 	num = D(num);
-	if (num < 1e6) return num.toStringWithDecimalPlaces(precision);
+	if (num < 1e6) return Number(num).toFixed(precision);
 	let e = num.e, m = num.m;
 	if (m >= 9.995) {
 		m = 1;

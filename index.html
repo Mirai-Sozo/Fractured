@@ -2,22 +2,60 @@
 <html>
 <head>
 	<title>idc</title>
+	<script src="js/lib/vue.js"></script>
 	<script src="js/lib/break_infinity.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-	<script src="js/core/noise.js"></script>
+	<script src="js/lib/lz-string.min.js"></script>
+	<script src="js/lib/grid_ops.js"></script>
+	<script src="js/lib/lzstring-extracted.js"></script>
+	<script src="js/lib/noise.js"></script>
 	<script src="js/core/player.js"></script>
+	<script src="js/core/map.js"></script>
+	<script src="js/core/exploration.js"></script>
 	<script src="js/core/game_loop.js"></script>
 	<script src="js/lib/notifier.js"></script>
+	<script src="js/lib/modals.js"></script>
+	<script src="js/core/buildings.js"></script>
+	<script src="js/core/menus.js"></script>
 	<script src="js/core/canvas.js"></script>
+	<script src="js/core/controls.js"></script>
+	<script src="js/lib/number_formatting.js"></script>
 	<script src="js/vue/app.js"></script>
-	<script src="js/number_formatting.js"></script>
 	<script src="js/core/load.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css"/>
+
+	<meta charset="utf-8"/>
 </head>
 <body onload="load()">
-	<div id="app">
+	<div id="app" style="height: 100%">
 		<notifier-container></notifier-container>
-		<canvas id="c"></canvas>
+		<div id="other-text">
+			<span v-if="false">Loading game... (May take a while)</span>
+			<top-text></top-text>
+		</div>
+		<div id="c-container" onmousemove="updateUnexploredTile(event)">
+			<div id="attr-container">
+				<span class="attr health">{{SPECIAL_CHARS.health}}</span>
+				<div class="bar-background">
+					<div :style="{
+						width: player.attributes.health.min(100)*2 + 'px'
+					}" class="bar-foreground healthbg"></div>
+				</div>
+				<br>
+				<span class="attr meat">{{SPECIAL_CHARS.meat}}</span>
+				<div class="bar-background">
+					<div :style="{
+						width: player.attributes.food.min(100)*2 + 'px'
+					}" class="bar-foreground meatbg"></div>
+				</div>
+			</div>
+			<canvas id="c" class="c"></canvas>
+			<canvas id="c1" class="c"></canvas>
+			<canvas id="c2" class="c"></canvas>
+		</div>
+		<modal></modal>
+		<div v-if="Modal.showing" style="height: 100%; width: 100%;
+		position: absolute; z-index: 12; top: 0; left: 0;
+		background: #0009"></div>
 	</div>
 </body>
 </html>

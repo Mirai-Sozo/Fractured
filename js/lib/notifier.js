@@ -2,15 +2,15 @@ let notifiers = [];
 let Notifier = {
 	load() {
 		Vue.component("notifier", {
-			props: ["text", "time"],
+			props: ["text", "time", "id"],
 			data: () => { return {
 				tick: player.time,
 				Math,
-				console
+				notifiers
 			}},
 			template: `<div class="notifier" :style="{
 				transform: 'translate(0, ' + Math.min(Math.sin((tick.thisTick - time)/3000 * Math.PI)*100, 40) + 'px)'
-			}">
+			}" @click="notifiers.splice(id, 1)">
 				<span v-html="text"></span>
 			</div>`
 		})
@@ -19,7 +19,7 @@ let Notifier = {
 				notifiers
 			}},
 			template: `<div class="notifier-container">
-				<notifier v-for="notifier in notifiers" :text="notifier.text" :time="notifier.time"></notifier>
+				<notifier v-for="(notifier, id) in notifiers" :text="notifier.text" :time="notifier.time" :id="id"></notifier>
 			</div>`
 		})
 

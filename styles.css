@@ -1,6 +1,14 @@
 :root {
-	--bg1: #333737;
+	--bg1: #171411;
+	--bg2: #17141188;
 	--c1: #fff;
+	--c2: #fff8;
+
+	--c-shards: #1bf;
+
+	--c-power: #ff0;
+	--c-health: #f00;
+	--c-meat: #ca5010;
 }
 
 @font-face {
@@ -55,15 +63,39 @@
 * {
 	color: var(--c1);
 	font: 15px "Iosevka Term SS08 Web";
+	user-select: none;
+	cursor: inherit;
+}
+h1 {
+	font-size: 30px;
+	margin: 5px;
+}
+b {
+	font-weight: 800;
 }
 html {
 	background-color: var(--bg1);
 	margin: 0;
 	padding: 0;
+	position: fixed;
+	cursor: default;
 }
 body {
 	margin: 0;
 	padding: 0;
+	width: 100%;
+	height: 100%;
+	position: fixed;
+}
+button {
+	background-color:  var(--bg1);
+	border: 2px solid;
+	cursor: pointer;
+	outline: none;
+}
+.sub {
+	opacity: 0.7;
+	font-style: italic;
 }
 
 .notifier {
@@ -78,10 +110,138 @@ body {
 	align-items: center;
 	justify-content: center;
 	background-color: var(--bg1);
+	z-index: 20;
 }
 .notifier-container {
 	position: absolute;
 	top: 5px;
 	right: 5px;
 	width: 172px;
+}
+
+.modal {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 400px;
+	width: 600px;
+	z-index: 13;
+	background-color: var(--bg1);
+	border: 2px solid;
+	font-size: 19px;
+}
+.modal-top {
+	text-align: left;
+	font-size: 30px;
+	width: 100%;
+	border-bottom: 2px solid #fff;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+}
+.modal-top > * {
+	margin: 0;
+}
+
+.option {
+	width: 180px;
+	height: 60px;
+	font-size: 20px;
+	vertical-align: top;
+	margin: 5px 0;
+}
+
+#other-text {
+	border: 2px solid;
+	height: 90px;
+	padding: 5px;
+}
+#c-container {
+	margin-top: 4px;
+	width: calc(100% - 4px);
+	border: 2px solid;
+	position: relative;
+	height: calc(100% - 113px);
+}
+.c {
+	position: absolute;
+}
+
+.building-segment {
+	border-bottom: 2px dashed var(--c2);
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	height: 60px;
+}
+
+
+/* Currencies */
+.curr {
+	font-size: 20px;
+	vertical-align: middle;
+	position: relative;
+	bottom: 4px;
+}
+.attr {
+	display: inline-block;
+	font-size: 30px;
+	vertical-align: middle;
+	width: 30px;
+	text-align: center;
+}
+
+
+.shards {
+	color: var(--c-shards);
+	font-size: 24px;
+	bottom: 8px;
+}
+
+.power {
+	color: var(--c-power);
+}
+.health {
+	color: var(--c-health);
+}
+.healthbg {
+	background-color: var(--c-health);
+}
+.meat {
+	color: var(--c-meat);
+	bottom: 0px;
+}
+.meatbg {
+	background-color: var(--c-meat);
+}
+
+#attr-container {
+	background: var(--bg2);
+	border: solid var(--c1);
+	border-width: 0 2px 2px 0;
+	padding: 7px;
+	position: absolute;
+	z-index: 11;
+	border-radius: 0 0 10px 0;
+}
+.bar-background {
+	display: inline-block;
+	background: #fff4;
+	height: 35px;
+	width: 200px;
+	vertical-align: middle;
+	border-radius: 3px;
+}
+.bar-foreground {
+	display: inline-block;
+	height: 35px;
+	border-radius: 3px;
+}
+
+
+.buildingImg {
+	font-size: 40px;
+	transform:  scale(1.4, 1);
+	display: inline-block;
 }
