@@ -91,7 +91,7 @@ let controls = {
 		}
 	},
 	"press "() {
-		stopPlacing();
+		Building.stopPlacing();
 	},
 	arrowup: false,
 	arrowleft: false,

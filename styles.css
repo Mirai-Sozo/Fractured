@@ -93,6 +93,11 @@ button {
 	cursor: pointer;
 	outline: none;
 }
+.single-button {
+	height: 30px;
+	width: 30px;
+	vertical-align: middle;
+}
 .sub {
 	opacity: 0.7;
 	font-style: italic;
@@ -174,6 +179,18 @@ button {
 	align-items: center;
 	cursor: pointer;
 	height: 60px;
+}
+.research-segment {
+	border-bottom: 2px dashed var(--c2);
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	height: 100px;
+	padding: 0 5px;
+}
+.locked {
+	opacity: 0.5;
+	cursor: not-allowed !important;
 }
 
 

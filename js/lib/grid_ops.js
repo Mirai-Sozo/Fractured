@@ -11,6 +11,7 @@ let SPECIAL_CHARS = {
 	tri: LZString.decompressFromBase64("inAQ"),
 	ohm: LZString.decompressFromBase64("pXAQ"),
 	theta: LZString.decompressFromBase64("h3AQ"),
+	solar: LZString.decompressFromBase64("gyuQ"),
 	power: LZString.decompressFromBase64("rwbifdo="),
 	slashO: atob("2A=="),
 	health: LZString.decompressFromBase64("ibkQ"),

@@ -19,7 +19,8 @@ function gameLoop(d) {
 			let tile = map[b.pos.x][b.pos.y];
 	
 			if (tile[1].gt(0)) {
-				let gain = tile[1].sub(9.999e6).min(BUILDINGS[SPECIAL_CHARS.tri].getProduction(b).mul(d));
+				let gain = b.meta.min(BUILDINGS[SPECIAL_CHARS.tri].getProduction(b).mul(d));
+
 				player.currency.shards = player.currency.shards.add(gain);
 				tile[1] = tile[1].sub(gain);
 				b.meta = b.meta.sub(gain);
@@ -27,7 +28,7 @@ function gameLoop(d) {
 		}
 		for (let b of player.buildings.x) {
 			if (Math.random() < 1 - Math.pow(0.9, d) && b.meta.active && player.currency.shards.gte(10)) {
-				b.meta.food = b.meta.food.add(5);
+				b.meta.food = b.meta.food.add(15);
 				player.currency.shards = player.currency.shards.sub(10);
 			}
 		}

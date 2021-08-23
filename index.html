@@ -15,6 +15,7 @@
 	<script src="js/lib/notifier.js"></script>
 	<script src="js/lib/modals.js"></script>
 	<script src="js/core/buildings.js"></script>
+	<script src="js/core/research.js"></script>
 	<script src="js/core/menus.js"></script>
 	<script src="js/core/canvas.js"></script>
 	<script src="js/core/controls.js"></script>
@@ -47,6 +48,9 @@
 						width: player.attributes.food.min(100)*2 + 'px'
 					}" class="bar-foreground meatbg"></div>
 				</div>
+				<br><br>
+				<span class="attr power">{{SPECIAL_CHARS.power}}</span>
+				<span style="font-size: 30px; vertical-align: middle;">{{format(player.attributes.powerUsed, 0)}}/{{format(player.attributes.power, 0)}}</span>
 			</div>
 			<canvas id="c" class="c"></canvas>
 			<canvas id="c1" class="c"></canvas>

@@ -20,7 +20,7 @@ function load() {
 			Modal.show({
 				title: "The beginning of the end.",
 				text: `<div style="margin: 30px;">Thousands of years have passed, and the conditions on Earth are deteriorating.<br><br>
-					Due to uncontrolled capitalism, all resources have been depleted by megacorporations only seeking temporary benefits.
+					Almost all the resources have run out, and it was projected that we would be completely devoid of new resources in 5 years.
 				</div>`,
 				buttons: [{
 					text: "Next",
@@ -31,8 +31,9 @@ function load() {
 				close() {
 					Modal.show({
 						title: "The beginning of the end.",
-						text: `<div style="margin: 30px;">It was too late to save Earth, so you were tasked to explore this new planet, named Cassiopeia, and set up a new civilisation.<br><br>
-							Rather unfortunately, this turned out to be a bare planet, with only sparse bits of useful resources scattered between.
+						text: `<div style="margin: 30px;">It was too late to save Earth, so many missions to space were planned.<br>
+							You were tasked to explore this new planet, named Cassiopeia, and set up a new civilisation.<br><br>
+							Rather unfortunately, this turned out to be a bare planet, with only sparse bits of useful resources scattered in between.
 							<br><br>
 							Best of luck surviving.
 						</div>`,

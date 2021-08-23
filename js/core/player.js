@@ -18,8 +18,8 @@ function getStartPlayer() {
 		},
 		attributes: {
 			health: D(100),
-			food: D(120),
-			power: D(1000),
+			food: D(100),
+			power: D(250),
 			powerUsed: D(0)
 		},
 		buildingAmt: {
@@ -31,6 +31,10 @@ function getStartPlayer() {
 			[SPECIAL_CHARS.tri]: [],
 			x: [],
 			[SPECIAL_CHARS.theta]: []
+		},
+		research: {
+			drilling: 0,
+			clearing: 0
 		},
 		options: {
 			autosave: true,
