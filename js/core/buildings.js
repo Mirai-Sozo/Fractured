@@ -131,7 +131,7 @@ const Building = {
 		player.buildingAmt[type] = player.buildingAmt[type].sub(1);
 		player.currency[b.currencyInternalName] = player.currency[b.currencyInternalName].add(b.cost.mul(0.8));
 		player.attributes.powerUsed = player.attributes.powerUsed.sub(b.power);
-		if (building.givePower) player.attributes.power = player.attributes.power.sub(building.givePower);
+		if (b.givePower) player.attributes.power = player.attributes.power.sub(b.givePower);
 		map[x][y][0] = getMapEmpty(x, y);
 		render();
 		updateTileUsage();
