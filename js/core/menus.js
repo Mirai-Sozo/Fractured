@@ -94,6 +94,7 @@ function loadMenus() {
 	Vue.component('areaclearer-menu', {
 		props: ["data"],
 		data: () => { return {
+                player,
 			BUILDINGS,
 			SPECIAL_CHARS,
 			Building,
