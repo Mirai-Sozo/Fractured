@@ -35,7 +35,7 @@ let EXPLORE = {
 					let dist = player.research.clearing >= 1 ? 0.9 + Math.pow(distGrid([i, j], [x, y]), 2)*0.1
 					: 0.8 + Math.pow(distGrid([i, j], [x, y]), 2)*0.2;
 
-					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d).div(h).div(dist));
+					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d).div(h).div(dist)).min(1);
 					if (tile[1].lte(0)) {
 						tile[0] = getMapEmpty(i, j);
 						tile[1] = D(1e7);
