@@ -110,16 +110,16 @@ function loadMenus() {
 		template: `<div style='padding: 10px;'>
 			<h1>Area clearer</h1>
 			Stats:<br>
-			<button @click="building.meta = building.meta.sub(1).max(0)" :class="{
+			<button @click="building.meta = building.meta.sub(1).min(6).max(0)" :class="{
 				'single-button': true,
 				'locked': building.meta.lte(0)
-			}">-</button>
+			}" v-if="player.research.clearing >= 1">-</button>
 			<span style="vertical-align: middle;">Clearing power: {{format(Decimal.pow(2, building.meta))}} |
 			<span class="curr shards">_</span> usage: -{{format(Decimal.pow(2, building.meta).mul(1.5))}}/s</span>
-			<button @click="building.meta = building.meta.add(1).min(15)" :class="{
+			<button @click="building.meta = building.meta.add(1).min(6).max(0)" :class="{
 				'single-button': true,
-				'locked': building.meta.gte(15)
-			}">+</button>
+				'locked': building.meta.gte(6)
+			}" v-if="player.research.clearing >= 1">+</button>
 			<br>
 			(0 <span class="curr shards">_</span> usage if no unexplored tile in vicinity)
 			<br><br><br><br>
