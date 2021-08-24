@@ -115,6 +115,9 @@ let controls = {
 			});
 		}
 	},
+	pressE() {
+		openMenu(351, 351);
+	},
 	ticks: 0
 }
 

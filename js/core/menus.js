@@ -17,6 +17,7 @@ function loadMenus() {
 		template: `<div style='text-align: center; overflow-y: auto;'>
 			<research-ui :rId="'drilling'"></research-ui>
 			<research-ui :rId="'clearing'"></research-ui>
+			<research-ui :rId="'access'"></research-ui>
 		</div>`
 	})
 	Building.load();
@@ -25,6 +26,7 @@ function loadMenus() {
 	Vue.component('drillv1-menu', {
 		props: ["data"],
 		data: () => { return {
+			Research,
 			player,
 			BUILDINGS,
 			SPECIAL_CHARS,
@@ -41,11 +43,11 @@ function loadMenus() {
 		template: `<div style='padding: 10px;'>
 			<h1>Drill V1</h1>
 			Stats:<br>
-			{{format(BUILDINGS[SPECIAL_CHARS.tri].getProduction(building))}}
+			{{format(BUILDINGS[SPECIAL_CHARS.tri].getProduction(building).mul(BUILDINGS[SPECIAL_CHARS.tri].getMult(building)))}}
 			<span class="curr shards">_</span>/s
 			<br>
 			Reserves:
-			{{format(building.meta, 0)}}/{{player.research.drilling >= 1 ? "2000" : "1000"}} <span class="curr shards">_</span>
+			{{format(building.meta, 0)}}/{{Research.has('drilling', 1) ? "2000" : "1000"}} <span class="curr shards">_</span>
 			<br><br><br><br>
 			<button @click="Building.sell(data.x, data.y, SPECIAL_CHARS.tri)">Sell for 80% of original price</button>
 		</div>`
@@ -94,7 +96,8 @@ function loadMenus() {
 	Vue.component('areaclearer-menu', {
 		props: ["data"],
 		data: () => { return {
-                player,
+			player,
+			Research,
 			BUILDINGS,
 			SPECIAL_CHARS,
 			Building,
@@ -106,21 +109,27 @@ function loadMenus() {
 		computed: {
 			building() {
 				return Building.getByPos(this.data.x, this.data.y, SPECIAL_CHARS.theta);
+			},
+			maxPow() {
+				let pow = 6;
+				if (Research.has("clearing", 2)) pow = 9;
+
+				return pow;
 			}
 		},
 		template: `<div style='padding: 10px;'>
 			<h1>Area clearer</h1>
 			Stats:<br>
-			<button @click="building.meta = building.meta.sub(1).min(6).max(0)" :class="{
+			<button @click="building.meta = building.meta.sub(1).min(maxPow).max(0)" :class="{
 				'single-button': true,
 				'locked': building.meta.lte(0)
-			}" v-if="player.research.clearing >= 1">-</button>
+			}" v-if="Research.has('clearing', 1)">-</button>
 			<span style="vertical-align: middle;">Clearing power: {{format(Decimal.pow(2, building.meta))}} |
-			<span class="curr shards">_</span> usage: -{{format(Decimal.pow(2, building.meta).mul(1.5))}}/s</span>
-			<button @click="building.meta = building.meta.add(1).min(6).max(0)" :class="{
+			<span class="curr shards">_</span> usage: {{format(Decimal.pow(2, building.meta).mul(BUILDINGS[SPECIAL_CHARS.theta].shardUsage))}}/s</span>
+			<button @click="building.meta = building.meta.add(1).min(maxPow).max(0)" :class="{
 				'single-button': true,
-				'locked': building.meta.gte(6)
-			}" v-if="player.research.clearing >= 1">+</button>
+				'locked': building.meta.gte(maxPow)
+			}" v-if="Research.has('clearing', 1)">+</button>
 			<br>
 			(0 <span class="curr shards">_</span> usage if no unexplored tile in vicinity)
 			<br><br><br><br>

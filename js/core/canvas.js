@@ -19,7 +19,7 @@ let tileStyle = {
 	E: '#db0000',
 	F: '#ff4040',
 	G: '#ff7b1c',
-	x: '#44ff22',
+	x: '#bbff40',
 	[SPECIAL_CHARS.ohm]: '#48FF87',
 	[SPECIAL_CHARS.dia]: '#ffffff',
 	[SPECIAL_CHARS.house]: '#2288ff',
@@ -49,7 +49,7 @@ function calcAlpha(x, y, draw = false) {
 			alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l))*0.35);
 	}
 	for (let b of player.buildings[SPECIAL_CHARS.theta]) {
-		if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && player.research.clearing >= 1) {
+		if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
 			alpha += 0.7/(0.9 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.1);
 		} else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
 			alpha += 0.7/(0.8 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.2);

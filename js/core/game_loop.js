@@ -21,7 +21,7 @@ function gameLoop(d) {
 			if (tile[1].gt(0)) {
 				let gain = b.meta.min(BUILDINGS[SPECIAL_CHARS.tri].getProduction(b).mul(d));
 
-				player.currency.shards = player.currency.shards.add(gain);
+				player.currency.shards = player.currency.shards.add(gain.mul(BUILDINGS[SPECIAL_CHARS.tri].getMult(b)));
 				tile[1] = tile[1].sub(gain);
 				b.meta = b.meta.sub(gain);
 			}

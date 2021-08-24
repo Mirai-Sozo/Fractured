@@ -34,7 +34,8 @@ function getStartPlayer() {
 		},
 		research: {
 			drilling: 0,
-			clearing: 0
+			clearing: 0,
+			access: 0
 		},
 		options: {
 			autosave: true,

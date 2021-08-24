@@ -6,6 +6,9 @@ let UNEXPLORED_DATA = {
 		health: D(400)
 	},
 	3: {
+		health: D(8000)
+	},
+	4: {
 		health: D(10000)
 	}
 }
@@ -32,7 +35,7 @@ let EXPLORE = {
 				let tile = map[i][j];
 				if (UNEXPLORED_DATA[tile[0]]) {
 					let h = UNEXPLORED_DATA[tile[0]].health;
-					let dist = player.research.clearing >= 1 ? 0.9 + Math.pow(distGrid([i, j], [x, y]), 2)*0.1
+					let dist = Research.has("clearing", 1) ? 0.9 + Math.pow(distGrid([i, j], [x, y]), 2)*0.1
 					: 0.8 + Math.pow(distGrid([i, j], [x, y]), 2)*0.2;
 
 					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d).div(h).div(dist)).min(1);
@@ -56,7 +59,7 @@ let EXPLORE = {
 			}
 		}
 
-		if (hasTile) player.currency.shards = player.currency.shards.sub(d);
+		if (hasTile) player.currency.shards = player.currency.shards.sub(d*BUILDINGS[SPECIAL_CHARS.theta].shardUsage/3);
 
 		return hasTile;
 	}

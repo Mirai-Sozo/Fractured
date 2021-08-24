@@ -7,6 +7,7 @@ function loadVue() {
 
 	Vue.component('top-text', {
 		data: () => { return {
+			Research,
 			player,
 			format,
 			formatWhole,
@@ -19,7 +20,8 @@ function loadVue() {
 					{{format(player.currency.shards)}} <span class="curr shards">_</span>
 				</span>
 				<br>
-				Welcome to Cassiopeia. Press WASD to navigate around the planet.
+				Welcome to Cassiopeia. Press WASD to navigate around the planet<span v-if="Research.has('access', 1)">,
+				and E to open the building menu</span>.
 			</div>
 			<div style="position: absolute; right: 0">
 				<button onclick="Modal.show({
@@ -46,6 +48,33 @@ function loadVue() {
 			</div>
 		</div>`
 	});
+	Vue.component('attributes', {
+		data: () => { return {
+			SPECIAL_CHARS,
+			attrs: player.attributes
+		}},
+		methods: {
+			format
+		},
+		template: `<div id="attr-container">
+			<span class="attr health">{{SPECIAL_CHARS.health}}</span>
+			<div class="bar-background">
+				<div :style="{
+					width: attrs.health.min(100)*2 + 'px'
+				}" class="bar-foreground healthbg"></div>
+			</div>
+			<br>
+			<span class="attr meat">{{SPECIAL_CHARS.meat}}</span>
+			<div class="bar-background">
+				<div :style="{
+					width: attrs.food.min(100)*2 + 'px'
+				}" class="bar-foreground meatbg"></div>
+			</div>
+			<br><br>
+			<span class="attr power">{{SPECIAL_CHARS.power}}</span>
+			<span style="font-size: 30px; vertical-align: middle;">{{format(attrs.powerUsed, 0)}}/{{format(attrs.power, 0)}}</span>
+		</div>`
+	})
 	Vue.component('options-menu', {
 		data: () => { return {
 			player

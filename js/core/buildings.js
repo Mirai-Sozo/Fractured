@@ -9,10 +9,19 @@ const BUILDINGS = {
 		desc: `Produces a small amount of <span class="curr shards">_</span>`,
 		name: "Drill v1",
 		get subConstant() {
-			return player.research.drilling >= 1 ? 9.998e6 : 9.999e6
+			return Research.has("drilling", 1) ? 9.998e6 : 9.999e6
+		},
+		getMult(b) {
+			let mult;
+			if (!Research.has("drilling", 2)) mult = 1;
+			else if (isNaN(parseInt(noiseMap[b.pos.x][b.pos.y][0]))) mult = 1;
+			else if (noiseMap[b.pos.x][b.pos.y][0] < 2) mult = 1;
+			else mult = 3;
+
+			return mult;
 		},
 		getProduction(b) {
-			return map[b.pos.x][b.pos.y][1].sub(this.subConstant).pow(1/3).mul(0.1).mul(player.research.drilling >= 1 ? 2 : 1);
+			return map[b.pos.x][b.pos.y][1].sub(this.subConstant).pow(1/3).mul(0.1).mul(Research.has("drilling", 1) ? 2 : 1);
 		},
 		canPlace(x, y) {
 			return checkTileAccess(x, y) && player.currency.shards.gte(this.cost);
@@ -46,13 +55,19 @@ const BUILDINGS = {
 		get cost() {
 			return player.buildingAmt[SPECIAL_CHARS.theta].pow(1.8).mul(10).add(150).round();
 		},
+		get shardUsage() {
+			let usage = 3;
+			if (Research.has("clearing", 2)) usage /= 2;
+
+			return usage;
+		},
 		power: D(5),
 		currencyDisplayName: "_",
 		currencyInternalName: "shards",
 		get desc() {
-			let area = player.research.clearing >= 1 ? "9" : "7";
+			let area = Research.has("clearing", 1) ? "9" : "7";
 			return `Clears unexplored tiles in a <b>${area}x${area}</b> area<br>
-			<i class="sub">Uses 1.5 <span class="curr shards">_</span>/s when clearing tiles</i>`
+			<i class="sub">Uses <span class="curr shards">_</span> when clearing tiles</i>`
 		},
 		name: "Area clearer",
 		canPlace(x, y) {

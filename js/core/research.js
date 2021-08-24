@@ -2,10 +2,12 @@ const RESEARCHES = {
 	drilling: {
 		name: "Drilling",
 		desc: [
-			"Increase maximum drill depth of the drill v1 by 1000, and double their production."
+			"Increase maximum drill depth of the drill v1 by 1000, and double their production.",
+			"Drills built on a tile coming from a 2 or higher produce x3 as much <span class='curr shards'>_</span> from the same amount of reserves."
 		],
 		cost: [
-			1000
+			1000,
+			4000
 		],
 		currencyDisplayName: "_",
 		currencyInternalName: "shards",
@@ -16,31 +18,63 @@ const RESEARCHES = {
 				}
 			}
 		},
-		maxLvl: 1,
+		maxLvl: 2,
 		canAfford: true
 	},
 	clearing: {
 		name: "Clearing",
 		desc: [
-			"Increase the range of area clearers to <b>9x9</b>, and you can feed them more <span class='curr shards'>_</span> for faster clearing."
+			"Increase the range of area clearers to <b>9x9</b>, and you can feed them more <span class='curr shards'>_</span> for faster clearing.",
+			"Increase the clearing power limit to 512, and reduce <span class='curr shards'>_</span> usage by 50%."
 		],
+		bReqList: [
+			5,
+			9,
+			0
+		],
+		get bReq() {
+			return this.bReqList[player.research.clearing];
+		},
 		get unAffordableText() {
-			return "Have at least 5 area clearers placed. Progress: " + format(player.buildingAmt[SPECIAL_CHARS.theta], 0) + "/5";
+			return "Have at least " + this.bReq + " area clearers placed. Progress: " + format(player.buildingAmt[SPECIAL_CHARS.theta], 0) + "/" + this.bReq;
 		},
 		cost: [
-			2500
+			2500,
+			1e4
+		],
+		currencyDisplayName: "_",
+		currencyInternalName: "shards",
+		buy(l) {},
+		maxLvl: 2,
+		get canAfford() {
+			return player.buildingAmt[SPECIAL_CHARS.theta].gte(this.bReq);
+		}
+	},
+	access: {
+		name: "Access",
+		desc: [
+			"You can press E to open the building menu at any time."
+		],
+		cost: [
+			100
 		],
 		currencyDisplayName: "_",
 		currencyInternalName: "shards",
 		buy(l) {},
 		maxLvl: 1,
+		get unAffordableText() {
+			return "Have at least 30 drill v1s placed. Progress: " +  + format(player.buildingAmt[SPECIAL_CHARS.tri], 0) + "/30";
+		},
 		get canAfford() {
-			return player.buildingAmt[SPECIAL_CHARS.theta].gte(5);
+			return player.buildingAmt[SPECIAL_CHARS.tri].gte(30);
 		}
 	}
 }
 
 const Research = {
+	has(id, lvl) {
+		return player.research[id] >= lvl
+	},
 	buy(id) {
 		const r = RESEARCHES[id];
 		if (player.research[id] >= r.maxLvl || player.currency[r.currencyInternalName].lt(r.cost[player.research[id]])) return;
@@ -73,7 +107,7 @@ const Research = {
 			}" @click="Research.buy(rId)">
 				<div style="text-align: left; width: 595px">
 					<span style="font-size: 20px;">
-						{{research.name}}
+						{{research.name}} {{player.research[rId] + 1}}
 					</span><br>
 					<span v-html="research.canAfford ? research.desc[lvl] : research.unAffordableText"
 					style="font-size: 16px; text-align: left;" v-if="lvl < research.maxLvl"></span>

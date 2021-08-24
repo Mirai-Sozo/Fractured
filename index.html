@@ -34,24 +34,7 @@
 			<top-text></top-text>
 		</div>
 		<div id="c-container" onmousemove="updateUnexploredTile(event)">
-			<div id="attr-container">
-				<span class="attr health">{{SPECIAL_CHARS.health}}</span>
-				<div class="bar-background">
-					<div :style="{
-						width: player.attributes.health.min(100)*2 + 'px'
-					}" class="bar-foreground healthbg"></div>
-				</div>
-				<br>
-				<span class="attr meat">{{SPECIAL_CHARS.meat}}</span>
-				<div class="bar-background">
-					<div :style="{
-						width: player.attributes.food.min(100)*2 + 'px'
-					}" class="bar-foreground meatbg"></div>
-				</div>
-				<br><br>
-				<span class="attr power">{{SPECIAL_CHARS.power}}</span>
-				<span style="font-size: 30px; vertical-align: middle;">{{format(player.attributes.powerUsed, 0)}}/{{format(player.attributes.power, 0)}}</span>
-			</div>
+			<attributes></attributes>
 			<canvas id="c" class="c"></canvas>
 			<canvas id="c1" class="c"></canvas>
 			<canvas id="c2" class="c"></canvas>
