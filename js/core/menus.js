@@ -134,7 +134,9 @@ let accessData = {
 }
 function openMenu(x, y) {
 	let tileName = map[x][y][0];
-	let name = MENU_DATA[tileName].name ?? tileName
+	if (player.buildings[tileName] && !Building.getByPos(x, y, map[x][y][0]))
+		map[x][y][0] = getMapEmpty(x, y);
+	let name = MENU_DATA[tileName].name ?? tileName;
 	Modal.show({
 		title: '<span style="font-size: 35px; color: ' + tileStyle[tileName] + ';">' + name + '</span>',
 		bind: MENU_NAMES[tileName] + '-menu',
