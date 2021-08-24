@@ -43,7 +43,8 @@ const RESEARCHES = {
 const Research = {
 	buy(id) {
 		const r = RESEARCHES[id];
-		if (player.research[id] >= r.maxLvl) return;
+		if (player.research[id] >= r.maxLvl || player.currency[r.currencyInternalName].lt(r.cost[player.research[id]])) return;
+        if (!r.canAfford) return;
 		r.buy(player.research[id]);
 		player.currency[r.currencyInternalName] = player.currency[r.currencyInternalName].sub(r.cost[player.research[id]]);
 		player.research[id]++;
