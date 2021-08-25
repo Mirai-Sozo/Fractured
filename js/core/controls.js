@@ -3,7 +3,8 @@ function loadControls() {
 		let key = e.key.toLowerCase();
 		console.log(key);
 		if (typeof controls["press" + key.toUpperCase()] == "function") controls["press" + key.toUpperCase()]();
-		if (controls[key] != undefined && !Modal.showing) controls[key] = true;
+		if (controls[key] != undefined && !Modal.showing)
+			controls[key] = true;
 	})
 
 	window.addEventListener("keyup", function (e) {
@@ -45,18 +46,21 @@ function loadControls() {
 
 		if (right && checkTileAccess(x + 1, y)) {
 			player.pos.x++;
+			x++;
+			//Needed to prevent diagonal clipping into blocks. Don't remove it again!
 			render();
 			updateTileUsage();
 		} else if (left && checkTileAccess(x - 1, y)) {
 			player.pos.x--;
+			x--;
 			render();
 			updateTileUsage();
 		}
-		if (controls.w && checkTileAccess(x, y - 1)) {
+		if (up && checkTileAccess(x, y - 1)) {
 			player.pos.y--;
 			render();
 			updateTileUsage();
-		} else if (controls.s && checkTileAccess(x, y + 1)) {
+		} else if (down && checkTileAccess(x, y + 1)) {
 			player.pos.y++;
 			render();
 			updateTileUsage();

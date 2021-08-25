@@ -8,6 +8,8 @@ function loadMenus() {
 			<building-ui :bId="SPECIAL_CHARS.tri" type="tile"></building-ui>
 			<building-ui :bId="'x'" type="tile"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.theta" type="tile"></building-ui>
+			<div class="building-segment" style="height: 40px"></div>
+			<building-ui :bId="'i'" type="tile"></building-ui>
 		</div>`
 	})
 	Vue.component('research-menu', {
@@ -136,10 +138,26 @@ function loadMenus() {
 			<button @click="Building.sell(data.x, data.y, SPECIAL_CHARS.theta)">Sell for 80% of original price</button>
 		</div>`
 	})
+	Vue.component('torch-menu', {
+		props: ["data"],
+		data: () => { return {
+			Building
+		}},
+		computed: {
+			building() {
+				return Building.getByPos(this.data.x, this.data.y, SPECIAL_CHARS.theta);
+			}
+		},
+		template: `<div style='padding: 10px;'>
+			<h1>Torch</h1>
+			<br><br><br><br>
+			<button @click="Building.sell(data.x, data.y, 'i')">Sell for 80% of original price</button>
+		</div>`
+	})
 }
 
 let accessData = {
-	usable: [SPECIAL_CHARS.tri, SPECIAL_CHARS.house, 'x', SPECIAL_CHARS.dia, SPECIAL_CHARS.theta],
+	usable: [SPECIAL_CHARS.tri, SPECIAL_CHARS.house, 'x', SPECIAL_CHARS.dia, SPECIAL_CHARS.theta, 'i'],
 	tiles: []
 }
 function openMenu(x, y) {
@@ -160,7 +178,8 @@ const MENU_NAMES = {
 	[SPECIAL_CHARS.tri]: 'drillv1',
 	x: 'trap',
 	[SPECIAL_CHARS.theta]: 'areaclearer',
-	[SPECIAL_CHARS.house]: 'research'
+	[SPECIAL_CHARS.house]: 'research',
+	i: 'torch'
 }
 const MENU_DATA = {
 	[SPECIAL_CHARS.dia]: {
@@ -178,8 +197,7 @@ const MENU_DATA = {
 		}
 	},
 	[SPECIAL_CHARS.tri]: {},
-	x: {
-		name: "Trap"
-	},
+	x: {},
 	[SPECIAL_CHARS.theta]: {},
+	i: {}
 }

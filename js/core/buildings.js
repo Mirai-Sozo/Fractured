@@ -77,6 +77,20 @@ const BUILDINGS = {
 			return D(0);
 		}
 	},
+	i: {
+		cost: D(50),
+		power: D(0),
+		currencyDisplayName: "_",
+		currencyInternalName: "shards",
+		desc: "Lights up a small area.",
+		name: "Torch",
+		canPlace(x, y) {
+			return checkTileAccess(x, y) && player.currency.shards.gte(this.cost);
+		},
+		startMeta(x, y) {
+			return D(0);
+		}
+	}
 }
 
 let placeData = {

@@ -25,12 +25,14 @@ function getStartPlayer() {
 		buildingAmt: {
 			[SPECIAL_CHARS.tri]: D(0),
 			x: D(0),
-			[SPECIAL_CHARS.theta]: D(0)
+			[SPECIAL_CHARS.theta]: D(0),
+			i: D(0)
 		},
 		buildings: {
 			[SPECIAL_CHARS.tri]: [],
 			x: [],
-			[SPECIAL_CHARS.theta]: []
+			[SPECIAL_CHARS.theta]: [],
+			i: []
 		},
 		research: {
 			drilling: 0,

@@ -20,6 +20,7 @@ let tileStyle = {
 	F: '#ff4040',
 	G: '#ff7b1c',
 	x: '#bbff40',
+	i: '#ffd790',
 	[SPECIAL_CHARS.ohm]: '#48FF87',
 	[SPECIAL_CHARS.dia]: '#ffffff',
 	[SPECIAL_CHARS.house]: '#2288ff',
@@ -54,6 +55,10 @@ function calcAlpha(x, y, draw = false) {
 		} else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
 			alpha += 0.7/(0.8 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.2);
 		}
+	}
+	for (let b of player.buildings.i) {
+		if (distance([x, y], [b.pos.x, b.pos.y]) < 10)
+			alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [b.pos.x, b.pos.y]))*0.25);
 	}
 	if (distance([x, y], [player.pos.x, player.pos.y]) < 20)
 		alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [player.pos.x, player.pos.y]))*0.3);
