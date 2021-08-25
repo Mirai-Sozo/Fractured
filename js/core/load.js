@@ -1,20 +1,20 @@
 function load() {
 	setTimeout(function() {
-		let testTime = new Date().getTime();
+		let testTime = Date.now();
 		loadMap();
 		loadPlayer();
 		loadVue();
-		let lastTick = new Date().getTime();
+		let lastTick = Date.now();
 		interval = setInterval(() => {
-			thisTick = new Date().getTime();
-			gameLoop((new Date().getTime() - lastTick)/1000);
-			lastTick = new Date().getTime();
+			thisTick = Date.now();
+			gameLoop((Date.now() - lastTick)/1000);
+			lastTick = Date.now();
 		}, 25);
 		setInterval(() => {if (player.options.autosave && !paused) save()}, 20000);
 		loadCanvas();
 		updateTileUsage();
 		loadControls();
-		console.log((new Date().getTime() - testTime) + "ms to load game");
+		console.log((Date.now() - testTime) + "ms to load game");
 
 		if (!player.loreUnlocks.start) {
 			Modal.show({

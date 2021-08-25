@@ -93,6 +93,9 @@ button {
 	cursor: pointer;
 	outline: none;
 }
+.mid {
+	vertical-align: middle;
+}
 .single-button {
 	height: 30px;
 	width: 30px;
@@ -199,7 +202,6 @@ button {
 	font-size: 20px;
 	vertical-align: middle;
 	position: relative;
-	bottom: 4px;
 }
 .attr {
 	display: inline-block;
@@ -217,7 +219,19 @@ button {
 }
 
 .power {
-	color: var(--c-power);
+	background: url(images/power.png) center;
+	display: inline-block;
+	vertical-align: middle;
+}
+.power.curr {
+	background-size: 20px 20px;
+	height: 20px;
+	width: 20px;
+}
+.power.attr {
+	background-size: 30px 30px;
+	height: 30px;
+	width: 30px;
 }
 .health {
 	color: var(--c-health);

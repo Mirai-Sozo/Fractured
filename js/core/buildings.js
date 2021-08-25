@@ -209,7 +209,7 @@ const Building = {
 							{{building.currencyDisplayName}}
 						</span>
 						<div v-if="building.power.gt(0)">
-							{{format(building.power, 0)}} <span class="curr power">{{SPECIAL_CHARS.power}}</span>
+							<span class="mid">{{format(building.power, 0)}}</span> <span class="curr power"></span>
 						</div>
 					</div>
 				</span>

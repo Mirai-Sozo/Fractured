@@ -12,7 +12,7 @@ function gameLoop(d) {
 	if (paused) return;
 	d = Math.min(d, 10);
 	player.time.timeStat += d;
-	player.time.thisTick = new Date().getTime();
+	player.time.thisTick = Date.now();
 
 	if (player.loreUnlocks.start && player.attributes.health.gt(0)) {
 		for (let b of player.buildings[SPECIAL_CHARS.tri]) {

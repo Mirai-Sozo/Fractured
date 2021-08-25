@@ -120,7 +120,7 @@ let controls = {
 		}
 	},
 	pressE() {
-		openMenu(351, 351);
+		if (Research.has("access", 1)) openMenu(351, 351);
 	},
 	ticks: 0
 }

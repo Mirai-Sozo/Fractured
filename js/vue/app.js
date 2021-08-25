@@ -71,8 +71,8 @@ function loadVue() {
 				}" class="bar-foreground meatbg"></div>
 			</div>
 			<br><br>
-			<span class="attr power">{{SPECIAL_CHARS.power}}</span>
-			<span style="font-size: 30px; vertical-align: middle;">{{format(attrs.powerUsed, 0)}}/{{format(attrs.power, 0)}}</span>
+			<span class="attr power"></span>
+			<span style="font-size: 30px;" class="mid">{{format(attrs.powerUsed, 0)}}/{{format(attrs.power, 0)}}</span>
 		</div>`
 	})
 	Vue.component('options-menu', {
