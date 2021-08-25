@@ -2,7 +2,8 @@ function getStartPlayer() {
 	return {
 		loreUnlocks: {
 			start: false,
-			place: false
+			place: false,
+			highestCleared: 0
 		},
 		pos: {
 			x: 351,
@@ -14,7 +15,8 @@ function getStartPlayer() {
 			timeStat: 0
 		},
 		currency: {
-			shards: D(20)
+			shards: D(20),
+			food: D(0)
 		},
 		attributes: {
 			health: D(100),
@@ -25,19 +27,22 @@ function getStartPlayer() {
 		buildingAmt: {
 			[SPECIAL_CHARS.tri]: D(0),
 			x: D(0),
+			[SPECIAL_CHARS.shrine]: D(0),
 			[SPECIAL_CHARS.theta]: D(0),
 			i: D(0)
 		},
 		buildings: {
 			[SPECIAL_CHARS.tri]: [],
 			x: [],
+			[SPECIAL_CHARS.shrine]: [],
 			[SPECIAL_CHARS.theta]: [],
 			i: []
 		},
 		research: {
 			drilling: 0,
 			clearing: 0,
-			access: 0
+			access: 0,
+			trapping: 0
 		},
 		options: {
 			autosave: true,

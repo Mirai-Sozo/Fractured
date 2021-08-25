@@ -6,22 +6,23 @@ let UNEXPLORED_DATA = {
 		health: D(400)
 	},
 	3: {
-		health: D(8000)
+		health: D(24000)
 	},
 	4: {
-		health: D(10000)
+		health: D(100000)
 	}
 }
 
 let EXPLORE = {
 	all(d) {
+		let testTime = Date.now();
 		let hasTile = false;
 		for (let b of player.buildings[SPECIAL_CHARS.theta]) {
 			hasTile = EXPLORE.area(b.pos.x, b.pos.y, d) || hasTile;
 		}
 		if (hasTile) {
-			render();
-			renderLayer1();
+			canvas.need0update = true;
+			canvas.need1update = true;
 		}
 	},
 	area(x, y, d) {
@@ -40,6 +41,7 @@ let EXPLORE = {
 
 					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d).div(h).div(dist)).min(1);
 					if (tile[1].lte(0)) {
+						player.loreUnlocks.highestCleared = Math.max(player.loreUnlocks.highestCleared, tile[0]);
 						tile[0] = getMapEmpty(i, j);
 						tile[1] = D(1e7);
 					}
@@ -52,7 +54,7 @@ let EXPLORE = {
 							dT[2] = format(tile[1].mul(h), 0) +
 							'/' + format(h, 0);
 						}
-						renderLayer2();
+						canvas.need2update = true;
 					}
 					hasTile = true;
 				}

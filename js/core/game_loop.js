@@ -78,6 +78,10 @@ function gameLoop(d) {
 		let obj = Updater.updates[i];
 		if (obj.running) obj.func(d);
 	}
+
+	if (canvas.need0update) render();
+	if (canvas.need1update) renderLayer1();
+	if (canvas.need2update) renderLayer2();
 }
 
 let interval;

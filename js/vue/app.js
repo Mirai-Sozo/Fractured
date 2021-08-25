@@ -8,6 +8,7 @@ function loadVue() {
 	Vue.component('top-text', {
 		data: () => { return {
 			Research,
+			SPECIAL_CHARS,
 			player,
 			format,
 			formatWhole,
@@ -17,7 +18,9 @@ function loadVue() {
 		template: `<div style="position: relative">
 			<div style="position: absolute;">
 				<span style="font-size: 20px">
-					{{format(player.currency.shards)}} <span class="curr shards">_</span>
+					<span>{{format(player.currency.shards)}} <span class="curr shards">_</span></span>
+					<span v-if="Research.has('trapping', 1)"> |
+					{{format(player.currency.food)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span></span>
 				</span>
 				<br>
 				Welcome to Cassiopeia. Press WASD to navigate around the planet<span v-if="Research.has('access', 1)">,
@@ -64,7 +67,7 @@ function loadVue() {
 				}" class="bar-foreground healthbg"></div>
 			</div>
 			<br>
-			<span class="attr meat">{{SPECIAL_CHARS.meat}}</span>
+			<span class="attr food">{{SPECIAL_CHARS.meat}}</span>
 			<div class="bar-background">
 				<div :style="{
 					width: attrs.food.min(100)*2 + 'px'

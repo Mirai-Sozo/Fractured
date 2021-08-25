@@ -65,6 +65,7 @@
 	font: 15px "Iosevka Term SS08 Web";
 	user-select: none;
 	cursor: inherit;
+	font-size: inherit;
 }
 h1 {
 	font-size: 30px;
@@ -137,7 +138,6 @@ button {
 	z-index: 13;
 	background-color: var(--bg1);
 	border: 2px solid;
-	font-size: 19px;
 }
 .modal-top {
 	text-align: left;
@@ -182,6 +182,7 @@ button {
 	align-items: center;
 	cursor: pointer;
 	height: 60px;
+	font-size: 15px;
 }
 .research-segment {
 	border-bottom: 2px dashed var(--c2);
@@ -239,7 +240,7 @@ button {
 .healthbg {
 	background-color: var(--c-health);
 }
-.meat {
+.food {
 	color: var(--c-meat);
 	bottom: 0px;
 }

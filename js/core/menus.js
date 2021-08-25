@@ -2,13 +2,15 @@ function loadMenus() {
 	Vue.component('crystal-menu', {
 		data: () => { return {
 			player,
+			Research,
 			SPECIAL_CHARS
 		}},
 		template: `<div style='text-align: center; overflow-y: auto;'>
 			<building-ui :bId="SPECIAL_CHARS.tri" type="tile"></building-ui>
 			<building-ui :bId="'x'" type="tile"></building-ui>
+			<building-ui :bId="SPECIAL_CHARS.shrine" type="tile" v-if="Research.has('trapping', 1)"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.theta" type="tile"></building-ui>
-			<div class="building-segment" style="height: 40px"></div>
+			<div class="building-segment" style="height: 40px; cursor: default;"></div>
 			<building-ui :bId="'i'" type="tile"></building-ui>
 		</div>`
 	})
@@ -18,6 +20,7 @@ function loadMenus() {
 		}},
 		template: `<div style='text-align: center; overflow-y: auto;'>
 			<research-ui :rId="'drilling'"></research-ui>
+			<research-ui :rId="'trapping'"></research-ui>
 			<research-ui :rId="'clearing'"></research-ui>
 			<research-ui :rId="'access'"></research-ui>
 		</div>`
@@ -68,6 +71,10 @@ function loadMenus() {
 				let transfer = D(150).sub(player.attributes.food).min(this.building.meta.food);
 				player.attributes.food = player.attributes.food.add(transfer);
 				this.building.meta.food = this.building.meta.food.sub(transfer);
+				if (Research.has('trapping', 1)) {
+					player.currency.food = player.currency.food.add(this.building.meta.food);
+					this.building.meta.food = D(0);
+				}
 			},
 			toggleActive() {
 				this.building.meta.active = !this.building.meta.active;
@@ -81,17 +88,28 @@ function loadMenus() {
 		template: `<div style='padding: 10px;'>
 			<h1>Trap ({{building.meta.active ? "ACTIVE" : "INACTIVE"}})</h1>
 			Stats:<br>
-			5% chance of capture/s, 15 <span class="curr meat">{{SPECIAL_CHARS.meat}}</span>/capture | 
+			5% chance of capture/s, 15 <span class="curr food">{{SPECIAL_CHARS.meat}}</span>/capture | 
 			-10 <span class="curr shards">_</span>/capture
 			<br>
 			Reserves:
-			{{format(building.meta.food, 0)}} <span class="curr meat">{{SPECIAL_CHARS.meat}}</span>
+			{{format(building.meta.food, 0)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span>
 			<br><br>
 			<button @click="collect()">Collect</button>
 			<br><br>
 			<button @click="toggleActive()">{{building.meta.active ? "Deactivate" : "Activate"}} trap</button>
 			<br><br><br><br>
 			<button @click="Building.sell(data.x, data.y, 'x')">Sell for 80% of original price</button>
+		</div>`
+	})
+	Vue.component('shrine-menu', {
+		props: ["data"],
+		data: () => { return {
+			Building
+		}},
+		template: `<div style='padding: 10px;'>
+			<h1>Shrine</h1>
+			<br><br><br><br>
+			<button @click="Building.sell(data.x, data.y, SPECIAL_CHARS.shrine)">Sell for 80% of original price</button>
 		</div>`
 	})
 
@@ -143,11 +161,6 @@ function loadMenus() {
 		data: () => { return {
 			Building
 		}},
-		computed: {
-			building() {
-				return Building.getByPos(this.data.x, this.data.y, SPECIAL_CHARS.theta);
-			}
-		},
 		template: `<div style='padding: 10px;'>
 			<h1>Torch</h1>
 			<br><br><br><br>
@@ -157,13 +170,15 @@ function loadMenus() {
 }
 
 let accessData = {
-	usable: [SPECIAL_CHARS.tri, SPECIAL_CHARS.house, 'x', SPECIAL_CHARS.dia, SPECIAL_CHARS.theta, 'i'],
+	usable: [SPECIAL_CHARS.tri, SPECIAL_CHARS.house, 'x', SPECIAL_CHARS.dia, SPECIAL_CHARS.shrine, SPECIAL_CHARS.theta, 'i'],
 	tiles: []
 }
 function openMenu(x, y) {
 	let tileName = map[x][y][0];
-	if (player.buildings[tileName] && !Building.getByPos(x, y, map[x][y][0]))
+	if (player.buildings[tileName] && !Building.getByPos(x, y, map[x][y][0])) {
 		map[x][y][0] = getMapEmpty(x, y);
+		return;
+	}
 	let name = MENU_DATA[tileName].name ?? tileName;
 	Modal.show({
 		title: '<span style="font-size: 35px; color: ' + tileStyle[tileName] + ';">' + name + '</span>',
@@ -177,6 +192,7 @@ const MENU_NAMES = {
 	[SPECIAL_CHARS.dia]: 'crystal',
 	[SPECIAL_CHARS.tri]: 'drillv1',
 	x: 'trap',
+	[SPECIAL_CHARS.shrine]: 'shrine',
 	[SPECIAL_CHARS.theta]: 'areaclearer',
 	[SPECIAL_CHARS.house]: 'research',
 	i: 'torch'
@@ -198,6 +214,7 @@ const MENU_DATA = {
 	},
 	[SPECIAL_CHARS.tri]: {},
 	x: {},
+	[SPECIAL_CHARS.shrine]: {},
 	[SPECIAL_CHARS.theta]: {},
 	i: {}
 }

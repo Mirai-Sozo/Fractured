@@ -30,7 +30,7 @@ function loadControls() {
 			else if (down) 
 				placeData.facing = 1;
 			
-			renderLayer1();
+			canvas.need1update = true;
 		} else {
 			controls.ticks = 0;
 		}
@@ -46,25 +46,19 @@ function loadControls() {
 
 		if (right && checkTileAccess(x + 1, y)) {
 			player.pos.x++;
-			x++;
-			//Needed to prevent diagonal clipping into blocks. Don't remove it again!
-			render();
-			updateTileUsage();
+			x++; //Needed to prevent diagonal clipping into blocks. Don't remove it again!
 		} else if (left && checkTileAccess(x - 1, y)) {
 			player.pos.x--;
 			x--;
-			render();
-			updateTileUsage();
 		}
 		if (up && checkTileAccess(x, y - 1)) {
 			player.pos.y--;
-			render();
-			updateTileUsage();
 		} else if (down && checkTileAccess(x, y + 1)) {
 			player.pos.y++;
-			render();
-			updateTileUsage();
 		}
+
+		canvas.need0update = true;
+		updateTileUsage();
 	})
 }
 
@@ -138,8 +132,8 @@ function getXYfromDir(dir) {
 	}
 }
 function checkTileAccess(x, y) {
-	if (x > 400 || x < 0) return false;
-	if (y > 400 || y < 0) return false;
+	if (x > 480 || x < 0) return false;
+	if (y > 480 || y < 0) return false;
 	return walkable.includes(map[x][y][0]);
 }
 function updateTileUsage() {
@@ -148,9 +142,9 @@ function updateTileUsage() {
 	let dirList = [0, 1, 2, 3];
 	for (let i in dirList) {
 		let [x, y] = getXYfromDir(i);
-		if (x < 0 || x > 400 || y < 0 || y > 400) return;
+		if (x < 0 || x > 480 || y < 0 || y > 480) return;
 		if (accessData.usable.includes(map[x][y][0])) accessData.tiles.push(Number(i));
 	}
 
-	renderLayer2();
+	canvas.need2update = true;
 }

@@ -3,7 +3,7 @@ const RESEARCHES = {
 		name: "Drilling",
 		desc: [
 			"Increase maximum drill depth of the drill v1 by 1000, and double their production.",
-			"Drills built on a tile coming from a 2 or higher produce x3 as much <span class='curr shards'>_</span> from the same amount of reserves."
+			"Drills built on a tile coming from a 2 or higher produce x3 the <span class='curr shards'>_</span> from the same reserves."
 		],
 		cost: [
 			1000,
@@ -20,6 +20,33 @@ const RESEARCHES = {
 		},
 		maxLvl: 2,
 		canAfford: true
+	},
+	trapping: {
+		name: "Trapping",
+		desc: [
+			`Excess <span class='curr food'>${SPECIAL_CHARS.meat}</span> from traps is collected a currency.<br>
+			<i class='sub'>This isn't useless, check the buildings menu!</i>`
+		],
+		bReqList: [
+			10,
+			0
+		],
+		get bReq() {
+			return this.bReqList[player.research.trapping];
+		},
+		get unAffordableText() {
+			return "Have at least " + this.bReq + " traps placed. Progress: " + format(player.buildingAmt.x, 0) + "/" + this.bReq;
+		},
+		cost: [
+			3000,
+		],
+		currencyDisplayName: "_",
+		currencyInternalName: "shards",
+		buy(l) {},
+		maxLvl: 1,
+		get canAfford() {
+			return player.buildingAmt.x.gte(this.bReq);
+		}
 	},
 	clearing: {
 		name: "Clearing",

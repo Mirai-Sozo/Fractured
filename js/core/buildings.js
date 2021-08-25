@@ -18,6 +18,13 @@ const BUILDINGS = {
 			else if (noiseMap[b.pos.x][b.pos.y][0] < 2) mult = 1;
 			else mult = 3;
 
+			for (let shrine of player.buildings[SPECIAL_CHARS.shrine]) {
+				if (distGrid([b.pos.x, b.pos.y], [shrine.pos.x, shrine.pos.y]) < 3) {
+					mult *= 1.5;
+					break;
+				}
+			}
+
 			return mult;
 		},
 		getProduction(b) {
@@ -49,6 +56,22 @@ const BUILDINGS = {
 				active: true,
 				food: D(0)
 			};
+		}
+	},
+	[SPECIAL_CHARS.shrine]:  {
+		get cost() {
+			return player.buildingAmt[SPECIAL_CHARS.shrine].pow(2).mul(15).add(1000).round();
+		},
+		power: D(0),
+		currencyDisplayName: SPECIAL_CHARS.meat,
+		currencyInternalName: "food",
+		desc: `All drills in a 5x5 area produce x1.5 the <span class="curr shards">_</span> from the same reserves.`,
+		name: "Shrine",
+		canPlace(x, y) {
+			return checkTileAccess(x, y) && player.currency.food.gte(this.cost);
+		},
+		startMeta(x, y) {
+			return {};
 		}
 	},
 	[SPECIAL_CHARS.theta]: {
@@ -130,32 +153,36 @@ const Building = {
 		}
 		placeData.nodeType = type;
 		placeData.node = id;
-		renderLayer1();
+		canvas.need1update = true;
 	},
 	stopPlacing() {
 		if (!placeData.node) return;
-		let building = BUILDINGS[placeData.node];
+		let b = BUILDINGS[placeData.node];
 		let [x, y] = getXYfromDir(placeData.facing);
 
-		if (!building.canPlace(x, y)) return;
+		if (!b.canPlace(x, y)) return;
 
-		player.currency[building.currencyInternalName] = player.currency[building.currencyInternalName].sub(building.cost);
-		player.attributes.powerUsed = player.attributes.powerUsed.add(building.power);
-		if (building.givePower) player.attributes.power = player.attributes.power.add(building.givePower);
+		if (b.onPlace) b.onPlace(x, y);
+
+		player.currency[b.currencyInternalName] = player.currency[b.currencyInternalName].sub(b.cost);
+		player.attributes.powerUsed = player.attributes.powerUsed.add(b.power);
+		if (b.givePower) player.attributes.power = player.attributes.power.add(b.givePower);
 
 		player.buildingAmt[placeData.node] = player.buildingAmt[placeData.node].add(1);
-		player.buildings[placeData.node].push({pos: {x, y}, meta: building.startMeta(x, y)});
+		player.buildings[placeData.node].push({pos: {x, y}, meta: b.startMeta(x, y)});
 		if (placeData.nodeType == "tile") {
 			map[x][y][0] = placeData.node;
 		}
 		placeData.node = "";
-		renderLayer1();
-		render();
+		canvas.need0update = true;
+		canvas.need1update = true;
 		updateTileUsage();
 	},
 	sell(x, y, type) {
 		Modal.close();
 		let b = BUILDINGS[type];
+		if (b.onSell) b.onSell(x, y);
+
 		player.buildings[type].splice(Building.getByPos(x, y, type, true), 1);
 		player.buildingAmt[type] = player.buildingAmt[type].sub(1);
 		player.currency[b.currencyInternalName] = player.currency[b.currencyInternalName].add(b.cost.mul(0.8));
@@ -202,7 +229,7 @@ const Building = {
 					&nbsp;
 				</span>
 				<span v-html="building.name + ': ' + building.desc" style="width: 550px; font-size: 16px; text-align: left;"></span>
-				<span style="width: 100px; font-size: 20px;">
+				<span style="width: 100px; font-size: 18px;">
 					<div style="margin-left: 5px; text-align: left;">
 						{{format(building.cost, 0)}}
 						<span :class="{curr: true, [building.currencyInternalName]: true}">

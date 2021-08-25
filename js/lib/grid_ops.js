@@ -9,6 +9,7 @@ let SPECIAL_CHARS = {
 	dia: LZString.decompressFromBase64("mZkQ"),
 	house: LZString.decompressFromBase64("kDEQ"),
 	tri: LZString.decompressFromBase64("inAQ"),
+	shrine: atob("sQ=="),
 	ohm: LZString.decompressFromBase64("pXAQ"),
 	theta: LZString.decompressFromBase64("h3AQ"),
 	solar: LZString.decompressFromBase64("gyuQ"),

@@ -25,6 +25,7 @@ let tileStyle = {
 	[SPECIAL_CHARS.dia]: '#ffffff',
 	[SPECIAL_CHARS.house]: '#2288ff',
 	[SPECIAL_CHARS.tri]: '#aaaaaa',
+	[SPECIAL_CHARS.shrine]: '#882722',
 	[SPECIAL_CHARS.theta]: '#ff88ff'
 }
 
@@ -39,6 +40,12 @@ function loadCanvas() {
 	updateTileUsage();
 	renderAll();
 	window.onresize = renderAll;
+}
+
+let canvas = {
+	need0update: false,
+	need1update: false,
+	need2update: false
 }
 
 const lights = [[351, 351], [357, 365]]
@@ -148,10 +155,10 @@ function render() {
 
 	for (let i = 0; i <= width; i++) {
 		let x = i + player.pos.x - Math.floor(width/2);
-		if (x < 0 || x > 400) continue;
+		if (x < 0 || x > 480) continue;
 		for (let j = 0; j <= height; j++) {
 			let y = j + player.pos.y - Math.floor(height/2);
-			if (y < 0 || y > 400) continue;
+			if (y < 0 || y > 480) continue;
 			let tile = map[x][y][0];
 
 			if (x == player.pos.x && y == player.pos.y)
