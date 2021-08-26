@@ -79,14 +79,13 @@ function stringDecimal(str) {
 		return (Math.pow(10, str.exponent)*str.mantissa).toString();
 	}
 
-	return this.mantissa + "e" + (this.exponent >= 0 ? "+" : "") + this.e;
+	return this.mantissa + "e" + (this.exponent >= 0 ? "+" : "") + this.exponent;
 }
 function encodeMap(map) {
 	return map.map((r, x) => r.map((p, y) => {return p[0] + stringDecimal(p[1])}).join(',')).join('#')
 }
 function workerFunc(e) {
-	//console.log(e)
-	postMessage({data: encodeMap(e.data.data)})
+	postMessage(encodeMap(e.data))
 }
 
 addEventListener('message', workerFunc)
@@ -94,12 +93,12 @@ addEventListener('message', workerFunc)
 let parseWorker = new Worker(URL.createObjectURL(new Blob( [mapSaveCode], {type:'text/javascript'} )))
 parseWorker.onmessage = function(e) {
 	localStorage.setItem(saveKey, JSON.stringify(player));
-	localStorage.setItem(saveKey + 'map', e.data.data);
+	localStorage.setItem(saveKey + 'map', e.data);
 	Notifier.notify("Saved Game.");
 }
 function save() {
 	Notifier.notify("Saving...");
-	parseWorker.postMessage({data: map});
+	parseWorker.postMessage(map);
 }
 
 let paused = false;

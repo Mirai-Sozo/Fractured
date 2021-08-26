@@ -36,7 +36,7 @@ function loadControls() {
 		}
 
 		if (controls.ticks != 1) {
-			controls.ticks = controls.ticks%4;
+			controls.ticks = controls.ticks%(player.attributes.food.lte(10) ? 8 : 4);
 			return;
 		}
 
@@ -99,7 +99,8 @@ let controls = {
 		if (Modal.showing) Modal.closeFunc();
 		else if (placeData.node) {
 			placeData.node = "";
-			renderLayer1();
+			canvas.need1update = true;
+			if (Research.has("access", 2)) canvas.need0update = true;
 		} else {
 			paused = true;
 			Modal.show({
@@ -115,6 +116,9 @@ let controls = {
 	},
 	pressE() {
 		if (Research.has("access", 1)) openMenu(351, 351);
+	},
+	pressR() {
+		if (Research.has("access", 3)) openMenu(357, 365);
 	},
 	ticks: 0
 }

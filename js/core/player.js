@@ -26,16 +26,20 @@ function getStartPlayer() {
 		},
 		buildingAmt: {
 			[SPECIAL_CHARS.tri]: D(0),
+			V: D(0),
 			x: D(0),
 			[SPECIAL_CHARS.shrine]: D(0),
 			[SPECIAL_CHARS.theta]: D(0),
+			[SPECIAL_CHARS.slashO]: D(0),
 			i: D(0)
 		},
 		buildings: {
 			[SPECIAL_CHARS.tri]: [],
+			V: [],
 			x: [],
 			[SPECIAL_CHARS.shrine]: [],
 			[SPECIAL_CHARS.theta]: [],
+			[SPECIAL_CHARS.slashO]: [],
 			i: []
 		},
 		research: {

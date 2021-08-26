@@ -27,7 +27,7 @@ function loadMap() {
 	}));
 	for (let i = 355; i < 358; i++) {
 		for (let j = 360; j < 363; j++) {
-			noiseMap[i][j] = ["^", decimalone];
+			noiseMap[i][j] = ["^", decimal1e7];
 		}
 	}
 	console.log("Finished map generation: " + (Date.now() - prevTime) + "ms");

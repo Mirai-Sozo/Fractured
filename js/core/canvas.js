@@ -25,8 +25,10 @@ let tileStyle = {
 	[SPECIAL_CHARS.dia]: '#ffffff',
 	[SPECIAL_CHARS.house]: '#2288ff',
 	[SPECIAL_CHARS.tri]: '#aaaaaa',
+	V: '#afaaee',
 	[SPECIAL_CHARS.shrine]: '#882722',
-	[SPECIAL_CHARS.theta]: '#ff88ff'
+	[SPECIAL_CHARS.theta]: '#ff88ff',
+	[SPECIAL_CHARS.slashO]: '#d54aff'
 }
 
 function loadCanvas() {
@@ -56,6 +58,7 @@ function calcAlpha(x, y, draw = false) {
 		if (distance([x, y], l) < 15)
 			alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l))*0.35);
 	}
+
 	for (let b of player.buildings[SPECIAL_CHARS.theta]) {
 		if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
 			alpha += 0.7/(0.9 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.1);
@@ -63,6 +66,25 @@ function calcAlpha(x, y, draw = false) {
 			alpha += 0.7/(0.8 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.2);
 		}
 	}
+	for (let b of player.buildings[SPECIAL_CHARS.slashO]) {
+		if (x == b.pos.x && y == b.pos.y) {
+			alpha = 1000;
+			break;
+		}
+		let ang = 0.25;
+
+		let hasTile = 0;
+		let area = 10.9;
+
+		if (distance([x, y], [b.pos.x, b.pos.y]) > area) continue;
+		let angMin = (b.meta.preset - 1)*Math.PI/2,
+			angMax = (b.meta.preset)*Math.PI/2;
+
+		let angle = (Math.atan2(x - b.pos.x, y - b.pos.y) + Math.PI*3/2) % (Math.PI*2);
+		if ((angle < angMin || angle > angMax) && !(angle == angMax % (Math.PI*2))) continue;
+		alpha += 1/(0.8 + Math.pow(distance([x, y], [b.pos.x, b.pos.y]), 1.5)*0.2);
+	}
+
 	for (let b of player.buildings.i) {
 		if (distance([x, y], [b.pos.x, b.pos.y]) < 10)
 			alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [b.pos.x, b.pos.y]))*0.25);
@@ -70,6 +92,7 @@ function calcAlpha(x, y, draw = false) {
 	if (distance([x, y], [player.pos.x, player.pos.y]) < 20)
 		alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [player.pos.x, player.pos.y]))*0.3);
 
+	if (player.attributes.health.lte(80)) alpha /= (95 - player.attributes.health)/15;
 	alpha = Math.min(alpha, 1);
 
 	if (draw && UNEXPLORED_DATA[map[x][y][0]]) {
@@ -165,7 +188,35 @@ function render() {
 				tile = SPECIAL_CHARS.ohm;
 
 			ctx.fillStyle = (tileStyle[tile] ?? "#ffffff") + calcAlpha(x, y, true);
+			if (Research.has("access", 2)) {
+				let sub, max;
+				switch (placeData.node) {
+					case SPECIAL_CHARS.tri:
+						sub = BUILDINGS[SPECIAL_CHARS.tri].subConstant,
+						max = 1e7 - sub;
+						if (tile == getMapEmpty(x, y) && map[x][y][1] - sub < max/10) {
+							ctx.fillStyle = "#ff0000" + calcAlpha(x, y, true);
+							ctx.shadowColor = "#ff0000";
+							ctx.shadowBlur = 15;
+							tile = "-"
+						}
+
+						break;
+					case 'V':
+						sub = BUILDINGS.V.subConstant,
+						max = 1e7 - sub;
+						if (tile == getMapEmpty(x, y) && map[x][y][1] - sub < max/10) {
+							ctx.fillStyle = "#ff0000" + calcAlpha(x, y, true);
+							ctx.shadowColor = "#ff0000";
+							ctx.shadowBlur = 15;
+							tile = "-"
+						}
+
+						break;
+				}
+			}
 			ctx.fillText(tile, i*20 + 10, j*25 + 25);
+			ctx.shadowBlur = 0;
 		}
 	}
 }

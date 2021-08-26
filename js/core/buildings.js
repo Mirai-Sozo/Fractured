@@ -34,7 +34,45 @@ const BUILDINGS = {
 			return checkTileAccess(x, y) && player.currency.shards.gte(this.cost);
 		},
 		startMeta(x, y) {
-			return map[x][y][1].sub(this.subConstant);
+			return map[x][y][1].sub(this.subConstant).max(0);
+		}
+	},
+	V: {
+		get cost() {
+			return player.buildingAmt.V.pow(1.8).mul(20).add(200).round();
+		},
+		power: D(0),
+		currencyDisplayName: "_",
+		currencyInternalName: "shards",
+		desc: `Produces a considerable amount of <span class="curr shards">_</span>`,
+		name: "Drill v2",
+		get subConstant() {
+			return 9.98e6;
+		},
+		getMult(b) {
+			let mult;
+			if (!Research.has("drilling", 2)) mult = 2;
+			else if (isNaN(parseInt(noiseMap[b.pos.x][b.pos.y][0]))) mult = 2;
+			else if (noiseMap[b.pos.x][b.pos.y][0] < 2) mult = 2;
+			else mult = 6;
+
+			for (let shrine of player.buildings[SPECIAL_CHARS.shrine]) {
+				if (distGrid([b.pos.x, b.pos.y], [shrine.pos.x, shrine.pos.y]) < 3) {
+					mult *= 1.5;
+					break;
+				}
+			}
+
+			return mult;
+		},
+		getProduction(b) {
+			return map[b.pos.x][b.pos.y][1].sub(this.subConstant).pow(1/3).mul(1/3);
+		},
+		canPlace(x, y) {
+			return checkTileAccess(x, y) && player.currency.shards.gte(this.cost);
+		},
+		startMeta(x, y) {
+			return map[x][y][1].sub(this.subConstant).max(0);
 		}
 	},
 	x: {
@@ -56,6 +94,15 @@ const BUILDINGS = {
 				active: true,
 				food: D(0)
 			};
+		},
+		collect(b) {
+			let transfer = D(150).sub(player.attributes.food).min(b.meta.food);
+			player.attributes.food = player.attributes.food.add(transfer);
+			b.meta.food = b.meta.food.sub(transfer);
+			if (Research.has('trapping', 1)) {
+				player.currency.food = player.currency.food.add(b.meta.food);
+				b.meta.food = D(0);
+			}
 		}
 	},
 	[SPECIAL_CHARS.shrine]:  {
@@ -98,6 +145,33 @@ const BUILDINGS = {
 		},
 		startMeta(x, y) {
 			return D(0);
+		}
+	},
+	[SPECIAL_CHARS.slashO]: {
+		get cost() {
+			return player.buildingAmt[SPECIAL_CHARS.slashO].pow(1.9).mul(200).add(10000).round();
+		},
+		get shardUsage() {
+			let usage = 10;
+
+			return usage;
+		},
+		power: D(50),
+		currencyDisplayName: "_",
+		currencyInternalName: "shards",
+		get desc() {
+			return `Clears unexplored tiles in a sector<br>
+			<i class="sub">You can change the angle in the menu</i>`
+		},
+		name: "Sector clearer",
+		canPlace(x, y) {
+			return checkTileAccess(x, y) && player.currency.shards.gte(this.cost);
+		},
+		startMeta(x, y) {
+			return {
+				power: D(0),
+				preset: 1
+			};
 		}
 	},
 	i: {
@@ -154,6 +228,7 @@ const Building = {
 		placeData.nodeType = type;
 		placeData.node = id;
 		canvas.need1update = true;
+		if (Research.has("access", 2)) canvas.need0update = true;
 	},
 	stopPlacing() {
 		if (!placeData.node) return;
@@ -189,7 +264,7 @@ const Building = {
 		player.attributes.powerUsed = player.attributes.powerUsed.sub(b.power);
 		if (b.givePower) player.attributes.power = player.attributes.power.sub(b.givePower);
 		map[x][y][0] = getMapEmpty(x, y);
-		render();
+		canvas.need0update = true;
 		updateTileUsage();
 	},
 	getByPos(x, y, type, id=false) {
@@ -229,7 +304,7 @@ const Building = {
 					&nbsp;
 				</span>
 				<span v-html="building.name + ': ' + building.desc" style="width: 550px; font-size: 16px; text-align: left;"></span>
-				<span style="width: 100px; font-size: 18px;">
+				<span style="width: 90px; font-size: 18px;">
 					<div style="margin-left: 5px; text-align: left;">
 						{{format(building.cost, 0)}}
 						<span :class="{curr: true, [building.currencyInternalName]: true}">

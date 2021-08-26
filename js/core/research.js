@@ -3,11 +3,13 @@ const RESEARCHES = {
 		name: "Drilling",
 		desc: [
 			"Increase maximum drill depth of the drill v1 by 1000, and double their production.",
-			"Drills built on a tile coming from a 2 or higher produce x3 the <span class='curr shards'>_</span> from the same reserves."
+			"Drills built on a tile coming from a 2 or higher produce x3 the <span class='curr shards'>_</span> from the same reserves.",
+			"Unlock the drill v2."
 		],
 		cost: [
 			1000,
-			4000
+			4000,
+			1.5e5
 		],
 		currencyDisplayName: "_",
 		currencyInternalName: "shards",
@@ -18,17 +20,19 @@ const RESEARCHES = {
 				}
 			}
 		},
-		maxLvl: 2,
+		maxLvl: 3,
 		canAfford: true
 	},
 	trapping: {
 		name: "Trapping",
 		desc: [
 			`Excess <span class='curr food'>${SPECIAL_CHARS.meat}</span> from traps is collected a currency.<br>
-			<i class='sub'>This isn't useless, check the buildings menu!</i>`
+			<i class='sub'>This isn't useless, check the buildings menu!</i>`,
+			`Automatically collect <span class='curr food'>${SPECIAL_CHARS.meat}</span> from traps.`
 		],
 		bReqList: [
 			10,
+			15,
 			0
 		],
 		get bReq() {
@@ -39,11 +43,22 @@ const RESEARCHES = {
 		},
 		cost: [
 			3000,
+			30000
 		],
-		currencyDisplayName: "_",
-		currencyInternalName: "shards",
-		buy(l) {},
-		maxLvl: 1,
+		get currencyDisplayName() {
+			return Research.has("trapping", 2) ? SPECIAL_CHARS.meat : "_"
+		},
+		get currencyInternalName() {
+			return Research.has("trapping", 2) ? "food" : "shards"
+		},
+		buy(l) {
+			if (l == 1) {
+				for (let b of player.buildings.x) {
+					BUILDINGS.x.collect(b);
+				}
+			}
+		},
+		maxLvl: 2,
 		get canAfford() {
 			return player.buildingAmt.x.gte(this.bReq);
 		}
@@ -52,11 +67,13 @@ const RESEARCHES = {
 		name: "Clearing",
 		desc: [
 			"Increase the range of area clearers to <b>9x9</b>, and you can feed them more <span class='curr shards'>_</span> for faster clearing.",
-			"Increase the clearing power limit to 512, and reduce <span class='curr shards'>_</span> usage by 50%."
+			"Increase the clearing power limit to 512, and reduce <span class='curr shards'>_</span> usage by 50%.",
+			"Unlock sector clearers."
 		],
 		bReqList: [
 			5,
 			9,
+			15,
 			0
 		],
 		get bReq() {
@@ -67,12 +84,13 @@ const RESEARCHES = {
 		},
 		cost: [
 			2500,
-			1e4
+			1e4,
+			5e5
 		],
 		currencyDisplayName: "_",
 		currencyInternalName: "shards",
 		buy(l) {},
-		maxLvl: 2,
+		maxLvl: 3,
 		get canAfford() {
 			return player.buildingAmt[SPECIAL_CHARS.theta].gte(this.bReq);
 		}
@@ -80,20 +98,24 @@ const RESEARCHES = {
 	access: {
 		name: "Access",
 		desc: [
-			"You can press E to open the building menu at any time."
+			"You can press E to open the building menu at any time.",
+			"Tiles with very few resources are highlighted in red when attempting to place a drill.",
+			"You can press R to open the research menu at any time.",
 		],
 		cost: [
-			100
+			100,
+			1e4,
+			5e4
 		],
 		currencyDisplayName: "_",
 		currencyInternalName: "shards",
 		buy(l) {},
-		maxLvl: 1,
+		maxLvl: 3,
 		get unAffordableText() {
 			return "Have at least 30 drill v1s placed. Progress: " +  + format(player.buildingAmt[SPECIAL_CHARS.tri], 0) + "/30";
 		},
 		get canAfford() {
-			return player.buildingAmt[SPECIAL_CHARS.tri].gte(30);
+			return player.buildingAmt[SPECIAL_CHARS.tri].gte(30) || Research.has("access", 1);
 		}
 	}
 }
@@ -117,7 +139,8 @@ const Research = {
 				player,
 				RESEARCHES,
 				Research,
-				format
+				format,
+				Math
 			}},
 			computed: {
 				research() {
@@ -134,13 +157,13 @@ const Research = {
 			}" @click="Research.buy(rId)">
 				<div style="text-align: left; width: 595px">
 					<span style="font-size: 20px;">
-						{{research.name}} {{player.research[rId] + 1}}
+						{{research.name}} {{Math.min(player.research[rId] + 1, research.maxLvl)}}
 					</span><br>
 					<span v-html="research.canAfford ? research.desc[lvl] : research.unAffordableText"
 					style="font-size: 16px; text-align: left;" v-if="lvl < research.maxLvl"></span>
 					<span style="font-size: 16px; text-align: left;" v-else>(MAXED)</span>
 				</div>
-				<span style="width: 95px; font-size: 20px;" v-if="lvl < research.maxLvl">
+				<span style="width: 85px; font-size: 20px;" v-if="lvl < research.maxLvl">
 					<div style="margin-left: 5px; text-align: left;">
 						{{format(research.cost[lvl], 0)}}
 						<span :class="{curr: true, [research.currencyInternalName]: true}">

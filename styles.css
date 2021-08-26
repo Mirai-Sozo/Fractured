@@ -13,51 +13,51 @@
 
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 200;
-    font-style: normal;
-    src: url("fonts/iosevka-term-ss08-extralight.woff") format("woff")
+	font-weight: 200;
+	font-style: normal;
+	src: url("fonts/iosevka-term-ss08-extralight.woff") format("woff")
 }
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 200;
-    font-style: italic;
-    src: url("fonts/iosevka-term-ss08-extralightitalic.woff") format("woff")
+	font-weight: 200;
+	font-style: italic;
+	src: url("fonts/iosevka-term-ss08-extralightitalic.woff") format("woff")
 }
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 400;
-    font-style: normal;
-    src: url("fonts/iosevka-term-ss08-regular.woff") format("woff")
+	font-weight: 400;
+	font-style: normal;
+	src: url("fonts/iosevka-term-ss08-regular.woff") format("woff")
 }
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 400;
-    font-style: italic;
-    src: url("fonts/iosevka-term-ss08-italic.woff") format("woff")
+	font-weight: 400;
+	font-style: italic;
+	src: url("fonts/iosevka-term-ss08-italic.woff") format("woff")
 }
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 600;
-    font-style: normal;
-    src: url("fonts/iosevka-term-ss08-semibold.woff") format("woff")
+	font-weight: 600;
+	font-style: normal;
+	src: url("fonts/iosevka-term-ss08-semibold.woff") format("woff")
 }
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 600;
-    font-style: italic;
-    src: url("fonts/iosevka-term-ss08-semibolditalic.woff") format("woff")
+	font-weight: 600;
+	font-style: italic;
+	src: url("fonts/iosevka-term-ss08-semibolditalic.woff") format("woff")
 }
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 800;
-    font-style: normal;
-    src: url("fonts/iosevka-term-ss08-extrabold.woff") format("woff")
+	font-weight: 800;
+	font-style: normal;
+	src: url("fonts/iosevka-term-ss08-extrabold.woff") format("woff")
 }
 @font-face {
 	font-family: 'Iosevka Term SS08 Web';
-    font-weight: 800;
-    font-style: italic;
-    src: url("fonts/iosevka-term-ss08-extrabolditalic.woff") format("woff")
+	font-weight: 800;
+	font-style: italic;
+	src: url("fonts/iosevka-term-ss08-extrabolditalic.woff") format("woff")
 }
 
 * {
@@ -89,7 +89,7 @@ body {
 	position: fixed;
 }
 button {
-	background-color:  var(--bg1);
+	background-color: var(--bg1);
 	border: 2px solid;
 	cursor: pointer;
 	outline: none;
@@ -180,6 +180,7 @@ button {
 	border-bottom: 2px dashed var(--c2);
 	display: flex;
 	align-items: center;
+	justify-content: flex-start;
 	cursor: pointer;
 	height: 60px;
 	font-size: 15px;
@@ -274,6 +275,40 @@ button {
 
 .buildingImg {
 	font-size: 40px;
-	transform:  scale(1.4, 1);
+	transform: scale(1.4, 1);
 	display: inline-block;
+}
+
+/* Menu stuff */
+.sector-select {
+	background-color: var(--c2);
+	height: 50px;
+	width: 50px;
+	margin: 2px;
+	display: inline-block;
+	vertical-align: middle;
+}
+.sector-select.selected {
+	background-color: #f008;
+}
+
+
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: var(--bg1);
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: var(--c2); 
+	border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #fffa; 
 }
