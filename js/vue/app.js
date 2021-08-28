@@ -95,7 +95,21 @@ function loadVue() {
 			<br>
 			<button class="option" onclick="player.options.autosave = !player.options.autosave;">Autosave: {{player.options.autosave ? "ON" : "OFF"}} (20s)</button>
 			<button class="option" onclick="save()">Manual Save</button>
-			<button class="option" onclick="if (confirm('Are you sure you want to reset?')) reset()">HARD RESET</button>
+			<button class="option" onclick="Modal.show({
+				title: 'Hard Reset',
+				text: '<br><br>Are you sure you want to hard reset?',
+				buttons: [{
+					text: 'Yes',
+					onClick() {
+						reset();
+					}
+				},{
+					text: 'No',
+					onClick() {
+						Modal.close();
+					}
+				}]
+			})">HARD RESET</button>
 			<br>
 			<span style="font-size: 18px">Visuals:</span>
 			<br>
