@@ -11,6 +11,11 @@ const BUILDINGS = {
 		get subConstant() {
 			return Research.has("drilling", 1) ? 9.998e6 : 9.999e6
 		},
+		get usageDiv() {
+			let usage = 1;
+			if (Magic.Enchants.has("n1")) usage *= 50;
+			return usage;
+		},
 		getMult(b) {
 			let mult;
 			if (!Research.has("drilling", 2)) mult = 1;
@@ -21,6 +26,7 @@ const BUILDINGS = {
 			for (let shrine of player.buildings[SPECIAL_CHARS.shrine]) {
 				if (distGrid([b.pos.x, b.pos.y], [shrine.pos.x, shrine.pos.y]) < 3) {
 					mult *= 1.5;
+					if (Research.has("trapping", 3) && player.currency.food.gte(5000)) mult *= 2;
 					break;
 				}
 			}
@@ -49,6 +55,11 @@ const BUILDINGS = {
 		get subConstant() {
 			return 9.98e6;
 		},
+		get usageDiv() {
+			let usage = 1;
+			if (Magic.Enchants.has("n1")) usage *= 50;
+			return usage;
+		},
 		getMult(b) {
 			let mult;
 			if (!Research.has("drilling", 2)) mult = 2;
@@ -59,6 +70,7 @@ const BUILDINGS = {
 			for (let shrine of player.buildings[SPECIAL_CHARS.shrine]) {
 				if (distGrid([b.pos.x, b.pos.y], [shrine.pos.x, shrine.pos.y]) < 3) {
 					mult *= 1.5;
+					if (Research.has("trapping", 3) && player.currency.food.gte(5000)) mult *= 2;
 					break;
 				}
 			}
@@ -82,10 +94,17 @@ const BUILDINGS = {
 		power: D(0),
 		currencyDisplayName: "_",
 		currencyInternalName: "shards",
-		desc: `Has a 5% chance of catching an animal each second<br>
-		<i class="sub">Can only be placed on <span style="color: #44bb22">^</span>,
-		uses 10 <span class="curr shards">_</span> for each capture<br></i>`,
+		get desc() {
+			return `Has a 10% chance of catching an animal each second<br>
+			<i class="sub">Can only be placed on <span style="color: #44bb22">^</span>,
+			uses ${format(BUILDINGS.x.shardUsage)} <span class="curr shards">_</span> for each capture<br></i>`
+		},
 		name: "Trap",
+		get shardUsage() {
+			let usage = 10;
+			if (Magic.Enchants.has("n2")) usage = 1;
+			return usage;
+		},
 		canPlace(x, y) {
 			return map[x][y][0] == "^" && player.currency.shards.gte(this.cost);
 		},
@@ -105,7 +124,7 @@ const BUILDINGS = {
 			}
 		}
 	},
-	[SPECIAL_CHARS.shrine]:  {
+	[SPECIAL_CHARS.shrine]: {
 		get cost() {
 			return player.buildingAmt[SPECIAL_CHARS.shrine].pow(2).mul(15).add(1000).round();
 		},
@@ -114,6 +133,22 @@ const BUILDINGS = {
 		currencyInternalName: "food",
 		desc: `All drills in a 5x5 area produce x1.5 the <span class="curr shards">_</span> from the same reserves.`,
 		name: "Shrine",
+		canPlace(x, y) {
+			return checkTileAccess(x, y) && player.currency.food.gte(this.cost);
+		},
+		startMeta(x, y) {
+			return {};
+		}
+	},
+	[SPECIAL_CHARS.lure]: {
+		get cost() {
+			return player.buildingAmt[SPECIAL_CHARS.lure].pow(1.8).mul(30).add(700).round();
+		},
+		power: D(0),
+		currencyDisplayName: SPECIAL_CHARS.meat,
+		currencyInternalName: "food",
+		desc: `All traps in a 5x5 area have a 20% chance of capturing instead of 10%.`,
+		name: "Lure",
 		canPlace(x, y) {
 			return checkTileAccess(x, y) && player.currency.food.gte(this.cost);
 		},

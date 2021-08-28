@@ -8,14 +8,18 @@ let SPECIAL_TILES = [{
 	pos: {x: 357, y: 365},
 	tile: SPECIAL_CHARS.house,
 	meta: D(0)
+}, {
+	pos: {x: 300, y: 300},
+	tile: SPECIAL_CHARS.gear,
+	meta: D(0)
 }]
 function loadMap() {
 	let decimalone = D(1),
 		decimal1e7 = D(1e7)
 	let prevTime = Date.now();
-	let layer1 = Lerp(Noise(25, 25, 0.45), 20),
-		layer2 = Lerp(Noise(41, 41, 0.45), 15),
-		layer3 = Lerp(Noise(101, 101, 0.3), 6);
+	let layer1 = Lerp(Noise(22, 22, 0.45), 20),
+		layer2 = Lerp(Noise(36, 36, 0.45), 15),
+		layer3 = Lerp(Noise(71, 71, 0.3), 6);
 	console.log("Finished noisemap generation: " + (Date.now() - prevTime) + "ms");
 
 	noiseMap = layer1.map((x, i) => x.map((y, j) => {

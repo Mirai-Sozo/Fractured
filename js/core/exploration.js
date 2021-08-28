@@ -9,7 +9,34 @@ let UNEXPLORED_DATA = {
 		health: D(24000)
 	},
 	4: {
-		health: D(100000)
+		health: D(1e5)
+	},
+	5: {
+		health: D(5e5)
+	},
+	6: {
+		health: D(1e6)
+	},
+	7: {
+		health: D(3e6)
+	},
+	8: {
+		health: D(1e7)
+	},
+	9: {
+		health: D(3e7)
+	},
+	A: {
+		health: D(2e8)
+	},
+	B: {
+		health: D(1e9)
+	},
+	C: {
+		health: D(1e10)
+	},
+	D: {
+		health: D(3e11)
 	}
 }
 
@@ -29,20 +56,23 @@ let EXPLORE = {
 		}
 	},
 	area(x, y, d) {
-		let clearPower = Decimal.pow(2, Building.getByPos(x, y, SPECIAL_CHARS.theta).meta);
-		d = player.currency.shards.min(clearPower.mul(3*d));
+		let clearPower = Decimal.pow(2, polysoft(Building.getByPos(x, y, SPECIAL_CHARS.theta).meta, 9)),
+			shardMult = Decimal.pow(2, Building.getByPos(x, y, SPECIAL_CHARS.theta).meta);
+		d = player.currency.shards.min(shardMult.mul(3*d));
 		let hasTile = 0;
 		let area = player.research.clearing >= 1 ? 4 : 3;
 
-		for (let i = Math.max(0, x - area); i <= Math.min(480, x + area); i++) {
-			for (let j = Math.max(0, y - area); j <= Math.min(480, y + area); j++) {
+		for (let i = Math.max(0, x - area); i <= Math.min(420, x + area); i++) {
+			for (let j = Math.max(0, y - area); j <= Math.min(420, y + area); j++) {
 				let tile = map[i][j];
 				if (UNEXPLORED_DATA[tile[0]]) {
 					let h = UNEXPLORED_DATA[tile[0]].health;
 					let dist = Research.has("clearing", 1) ? 0.9 + Math.pow(distGrid([i, j], [x, y]), 2)*0.1
 					: 0.8 + Math.pow(distGrid([i, j], [x, y]), 2)*0.2;
 
-					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d).div(h).div(dist)).min(1);
+					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip()
+						.mul(d.mul(clearPower).div(shardMult)).mul(Magic.Spells.has("power") ? 5 : 1)
+						.div(h).div(dist)).min(1);
 					if (tile[1].lte(0)) {
 						player.loreUnlocks.highestCleared = Math.max(player.loreUnlocks.highestCleared, tile[0]);
 						tile[0] = getMapEmpty(i, j);
@@ -69,7 +99,8 @@ let EXPLORE = {
 		return hasTile;
 	},
 	sector(b, d) {
-		let clearPower = Decimal.pow(2, b.meta.power);
+		let clearPower = Decimal.pow(2, polysoft(b.meta.power, 9)),
+			shardMult = Decimal.pow(2, b.meta.power);
 		let ang = 0.25;
 		let secs = {
 			q1: false, q2: false, q3: false, q4: false
@@ -77,19 +108,21 @@ let EXPLORE = {
 		secs["q" + b.meta.preset] = true;
 		let {x, y} = b.pos;
 
-		d = player.currency.shards.min(clearPower.mul(d));
+		d = player.currency.shards.min(shardMult.mul(d));
 		let hasTile = 0;
 		let area = 11;
 
-		for (let i = Math.max(0, x - area*(secs.q2 || secs.q3)); i <= Math.min(480, x + area*(secs.q1 || secs.q4)); i++) {
-			for (let j = Math.max(0, y - area*(secs.q1 || secs.q2)); j <= Math.min(480, y + area*(secs.q3 || secs.q4)); j++) {
+		for (let i = Math.max(0, x - area*(secs.q2 || secs.q3)); i <= Math.min(420, x + area*(secs.q1 || secs.q4)); i++) {
+			for (let j = Math.max(0, y - area*(secs.q1 || secs.q2)); j <= Math.min(420, y + area*(secs.q3 || secs.q4)); j++) {
 				if (distance([x, y], [i, j]) > area) continue;
 				let tile = map[i][j];
 				if (UNEXPLORED_DATA[tile[0]]) {
 					let h = UNEXPLORED_DATA[tile[0]].health;
 					let dist = 0.8 + Math.pow(distance([x, y], [b.pos.x, b.pos.y]), 1.5)*0.2;
 
-					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip().mul(d).div(h).div(dist).div(ang)).min(1);
+					tile[1] = tile[1].sub(tile[1].mul(h).add(2).log10().recip()
+						.mul(d.mul(clearPower).div(shardMult)).mul(Magic.Spells.has("power") ? 10 : 1)
+						.div(h).div(dist).div(ang)).min(1);
 					if (tile[1].lte(0)) {
 						player.loreUnlocks.highestCleared = Math.max(player.loreUnlocks.highestCleared, tile[0]);
 						tile[0] = getMapEmpty(i, j);
@@ -110,8 +143,7 @@ let EXPLORE = {
 				}
 			}
 		}
-
-		if (hasTile) player.currency.shards = player.currency.shards.sub(d*BUILDINGS[SPECIAL_CHARS.theta].shardUsage);
+		if (hasTile) player.currency.shards = player.currency.shards.sub(d.mul(BUILDINGS[SPECIAL_CHARS.slashO].shardUsage));
 
 		return hasTile;
 	}

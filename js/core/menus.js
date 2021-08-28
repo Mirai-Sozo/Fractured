@@ -10,6 +10,7 @@ function loadMenus() {
 			<building-ui :bId="'V'" type="tile" v-if="Research.has('drilling', 3)"></building-ui>
 			<building-ui :bId="'x'" type="tile"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.shrine" type="tile" v-if="Research.has('trapping', 1)"></building-ui>
+			<building-ui :bId="SPECIAL_CHARS.lure" type="tile" v-if="Research.has('trapping', 4)"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.theta" type="tile"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.slashO" v-if="Research.has('clearing', 3)" type="tile"></building-ui>
 			<div class="building-segment" style="height: 40px; cursor: default;"></div>
@@ -25,10 +26,99 @@ function loadMenus() {
 			<research-ui :rId="'trapping'"></research-ui>
 			<research-ui :rId="'clearing'"></research-ui>
 			<research-ui :rId="'access'"></research-ui>
+			<research-ui :rId="'magic'" v-if="player.loreUnlocks.village"></research-ui>
 		</div>`
 	})
+	Vue.component('village-menu', {
+		data: () => { return {
+			player,
+			SPECIAL_CHARS,
+			tradeAmt: 0.1,
+			tab: "enchants"
+		}},
+		methods: {
+			trade(amt) {
+				let tradeRatio = this.tradeRatio;
+				if (player.currency.food.lt(tradeRatio)) return;
+				let transfer = player.currency.food.mul(amt).div(tradeRatio).floor();
+				player.currency.magic = player.currency.magic.add(transfer);
+				player.currency.food = player.currency.food.sub(transfer.mul(tradeRatio));
+			},
+			format
+		},
+		computed: {
+			tradeRatio() {
+				let rate = 1e3;
+				if (Research.has("magic", 1)) rate = 750;
+				return rate;
+			}
+		},
+		template: `<div style='text-align: center; overflow-y: auto; height: 554px;'>
+			<h1>Trade</h1>
+			<div style='text-align: center; position: relative;'>
+				<span style="font-size: 20px; position: absolute; right: 120px; top: 5px">
+					{{format(player.currency.magic, 0)}} <span class="curr magic">*</span>
+				</span>
+				<div style='position: absolute; left: 10px;'>
+					<button :class="{
+						'med-button': true,
+						locked: tradeAmt == 0.1
+					}" @click="tradeAmt = 0.1">10%</button>
+					<button :class="{
+						'med-button': true,
+						locked: tradeAmt == 0.2
+					}" @click="tradeAmt = 0.2">20%</button>
+					<button :class="{
+						'med-button': true,
+						locked: tradeAmt == 0.5
+					}" @click="tradeAmt = 0.5">50%</button>
+					<button :class="{
+						'med-button': true,
+						locked: tradeAmt == 1
+					}" @click="tradeAmt = 1">100%</button>
+				</div>
+				<button style="font-size: 20px; padding: 6px;" @click="trade(tradeAmt)">
+					{{player.currency.food.mul(tradeAmt).div(tradeRatio).floor().mul(tradeRatio)}}
+					<span class="curr food">{{SPECIAL_CHARS.meat}}</span>
+					->
+					{{player.currency.food.mul(tradeAmt).div(tradeRatio).floor()}}
+					<span class="curr magic">*</span>
+				</button>
+
+
+				<br><br><div style="height: 2px; background-color: var(--c1)"></div><br>
+				<button style="font-size: 20px;" @click="tab = 'enchants'" :class="{
+					locked: tab == 'enchants'
+				}">Enchants</button>
+				<button style="font-size: 20px;" @click="tab = 'spells'" :class="{
+					locked: tab == 'spells'
+				}">Spells</button>
+				<br><br>
+
+				<div v-if="tab == 'enchants'">
+					<div style="display: flex; justify-content: center;">
+						<enchant :eId="'n1'"></enchant>
+						<enchant :eId="'n2'"></enchant>
+					</div>
+					<div style="display: flex; justify-content: center;">
+						<enchant :eId="'l1'"></enchant>
+						<enchant :eId="'l2'"></enchant>
+					</div>
+				</div>
+				<div v-if="tab == 'spells'">
+					<div style="display: flex; justify-content: center;">
+						<spell :sId="'temporal'"></spell>
+						<spell :sId="'artemis'"></spell>
+						<spell :sId="'power'"></spell>
+					</div>
+				</div>
+			</div>
+		</div>`
+	});
 	Building.load();
 	Research.load();
+	Magic.Enchants.load();
+	Magic.Spells.load();
 
 	Vue.component('drillv1-menu', {
 		props: ["data"],
@@ -94,7 +184,8 @@ function loadMenus() {
 		data: () => { return {
 			BUILDINGS,
 			SPECIAL_CHARS,
-			Building
+			Building,
+			Magic
 		}},
 		methods: {
 			format,
@@ -106,13 +197,19 @@ function loadMenus() {
 		computed: {
 			building() {
 				return Building.getByPos(this.data.x, this.data.y, 'x');
+			},
+			hasLure() {
+				for (let b of player.buildings[SPECIAL_CHARS.lure]) {
+					if (distGrid([this.data.x, this.data.y], [b.pos.x, b.pos.y]) < 3) return true;
+				}
+				return false;
 			}
 		},
 		template: `<div style='padding: 10px;'>
 			<h1>Trap ({{building.meta.active ? "ACTIVE" : "INACTIVE"}})</h1>
 			Stats:<br>
-			5% chance of capture/s, 15 <span class="curr food">{{SPECIAL_CHARS.meat}}</span>/capture | 
-			-10 <span class="curr shards">_</span>/capture
+			{{hasLure ? "20" : "10"}}% chance of capture/s, {{(Magic.Spells.has("artemis") ? 40 : 15)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span>/capture | 
+			-{{format(BUILDINGS.x.shardUsage, 0)}} <span class="curr shards">_</span>/capture
 			<br>
 			Reserves:
 			{{format(building.meta.food, 0)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span>
@@ -127,12 +224,30 @@ function loadMenus() {
 	Vue.component('shrine-menu', {
 		props: ["data"],
 		data: () => { return {
-			Building
+			SPECIAL_CHARS,
+			Building,
+			Research,
+			player
 		}},
 		template: `<div style='padding: 10px;'>
 			<h1>Shrine</h1>
+			<span v-if="Research.has('trapping', 3)">Stats:<br>
+			{{player.currency.food.gte(5000) ? "x3" : "x1.5"}} Drill production in a 5x5 area |
+			-30 <span class="curr food">{{SPECIAL_CHARS.meat}}</span>/s</span>
 			<br><br><br><br>
 			<button @click="Building.sell(data.x, data.y, SPECIAL_CHARS.shrine)">Sell for 80% of original price</button>
+		</div>`
+	})
+	Vue.component('lure-menu', {
+		props: ["data"],
+		data: () => { return {
+			SPECIAL_CHARS,
+			Building
+		}},
+		template: `<div style='padding: 10px;'>
+			<h1>Lure</h1>
+			<br><br><br><br>
+			<button @click="Building.sell(data.x, data.y, SPECIAL_CHARS.lure)">Sell for 80% of original price</button>
 		</div>`
 	})
 
@@ -147,7 +262,8 @@ function loadMenus() {
 			Decimal
 		}},
 		methods: {
-			format
+			format,
+			polysoft
 		},
 		computed: {
 			building() {
@@ -156,6 +272,7 @@ function loadMenus() {
 			maxPow() {
 				let pow = 6;
 				if (Research.has("clearing", 2)) pow = 9;
+				if (Magic.Enchants.has("l1")) pow = 20;
 
 				return pow;
 			}
@@ -167,7 +284,7 @@ function loadMenus() {
 				'single-button': true,
 				'locked': building.meta.lte(0)
 			}" v-if="Research.has('clearing', 1)">-</button>
-			<span style="vertical-align: middle;">Clearing power: {{format(Decimal.pow(2, building.meta), 0)}} |
+			<span style="vertical-align: middle;">Clearing power: {{format(Decimal.pow(2, polysoft(building.meta, 9)), 0)}} |
 			<span class="curr shards">_</span> usage:
 			{{format(Decimal.pow(2, building.meta).mul(BUILDINGS[SPECIAL_CHARS.theta].shardUsage), 1)}}/s</span>
 			<button @click="building.meta = building.meta.add(1).min(maxPow).max(0)" :class="{
@@ -191,14 +308,16 @@ function loadMenus() {
 			Decimal
 		}},
 		methods: {
-			format
+			format,
+			polysoft
 		},
 		computed: {
 			building() {
 				return Building.getByPos(this.data.x, this.data.y, SPECIAL_CHARS.slashO);
 			},
 			maxPow() {
-				let pow = 8;
+				let pow = 9;
+				if (Magic.Enchants.has("l1")) pow = 20;
 
 				return pow;
 			}
@@ -210,7 +329,7 @@ function loadMenus() {
 				'single-button': true,
 				'locked': building.meta.power.lte(0)
 			}" v-if="Research.has('clearing', 1)">-</button>
-			<span style="vertical-align: middle;">Clearing power: {{format(Decimal.pow(2, building.meta.power), 0)}} |
+			<span style="vertical-align: middle;">Clearing power: {{format(Decimal.pow(2, polysoft(building.meta.power, 9)), 0)}} |
 			<span class="curr shards">_</span> usage:
 			{{format(Decimal.pow(2, building.meta.power).mul(BUILDINGS[SPECIAL_CHARS.slashO].shardUsage), 1)}}/s</span>
 			<button @click="building.meta.power = building.meta.power.add(1).min(maxPow).max(0)" :class="{
@@ -257,8 +376,6 @@ function loadMenus() {
 }
 
 let accessData = {
-	usable: [SPECIAL_CHARS.tri, 'V', SPECIAL_CHARS.house, 'x', SPECIAL_CHARS.dia, SPECIAL_CHARS.shrine,
-	SPECIAL_CHARS.theta, SPECIAL_CHARS.slashO, 'i'],
 	tiles: []
 }
 function openMenu(x, y) {
@@ -270,25 +387,16 @@ function openMenu(x, y) {
 	let name = MENU_DATA[tileName].name ?? tileName;
 	Modal.show({
 		title: '<span style="font-size: 35px; color: ' + tileStyle[tileName] + ';">' + name + '</span>',
-		bind: MENU_NAMES[tileName] + '-menu',
+		bind: MENU_DATA[tileName].id + '-menu',
 		bindData: {x, y, tile: map[x][y]},
 		style: MENU_DATA[tileName].style ?? {}
 	})
+	if (MENU_DATA[tileName].onOpen) MENU_DATA[tileName].onOpen();
 }
 
-const MENU_NAMES = {
-	[SPECIAL_CHARS.dia]: 'crystal',
-	[SPECIAL_CHARS.tri]: 'drillv1',
-	V: 'drillv2',
-	x: 'trap',
-	[SPECIAL_CHARS.shrine]: 'shrine',
-	[SPECIAL_CHARS.theta]: 'areaclearer',
-	[SPECIAL_CHARS.slashO]: 'sectorclearer',
-	[SPECIAL_CHARS.house]: 'research',
-	i: 'torch'
-}
 const MENU_DATA = {
 	[SPECIAL_CHARS.dia]: {
+		id: 'crystal',
 		name: 'Construction firm',
 		style: {
 			width: '700px',
@@ -296,17 +404,49 @@ const MENU_DATA = {
 		}
 	},
 	[SPECIAL_CHARS.house]: {
+		id: 'research',
 		name: 'Laboratory',
 		style: {
 			width: '700px',
 			height: '500px'
 		}
 	},
-	[SPECIAL_CHARS.tri]: {},
-	V: {},
-	x: {},
-	[SPECIAL_CHARS.shrine]: {},
-	[SPECIAL_CHARS.theta]: {},
-	[SPECIAL_CHARS.slashO]: {},
-	i: {}
+	[SPECIAL_CHARS.gear]: {
+		id: 'village',
+		name: 'Village',
+		style: {
+			width: '700px',
+			height: '600px'
+		},
+		onOpen() {
+			if (!player.loreUnlocks.village) {
+				Modal.show({
+					title: 'The village',
+					text: `<div style="margin: 30px;">
+						Civilisation? On this desolate, sorry planet?<br><br>
+						Perhaps the previous civilisation used up all the resources as well.<br>
+						The villagers here are starving, and they're willing to exchange some of their tricks with you for food.
+					</div>`,
+					buttons: [{
+						text: "Next",
+						onClick() {
+							Modal.closeFunc();
+						}
+					}],
+					close() {
+						player.loreUnlocks.village = true;
+						openMenu(300, 300);
+					}
+				})
+			}
+		}
+	},
+	[SPECIAL_CHARS.tri]: {id: 'drillv1'},
+	V: {id: 'drillv2'},
+	x: {id: 'trap'},
+	[SPECIAL_CHARS.shrine]: {id: 'shrine'},
+	[SPECIAL_CHARS.lure]: {id: 'lure'},
+	[SPECIAL_CHARS.theta]: {id: 'areaclearer'},
+	[SPECIAL_CHARS.slashO]: {id: 'sectorclearer'},
+	i: {id: 'torch'}
 }

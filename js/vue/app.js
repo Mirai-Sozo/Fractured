@@ -15,17 +15,25 @@ function loadVue() {
 			Decimal,
 			Modal
 		}},
-		template: `<div style="position: relative">
+		template: `<div style="position: relative; height: 100%;">
 			<div style="position: absolute;">
 				<span style="font-size: 20px">
 					<span>{{format(player.currency.shards)}} <span class="curr shards">_</span></span>
 					<span v-if="Research.has('trapping', 1)"> |
-					{{format(player.currency.food)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span></span>
+					{{format(player.currency.food, 0)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span></span>
+					<span v-if="player.loreUnlocks.village"> |
+					{{format(player.currency.magic, 0)}} <span class="curr magic">*</span></span>
 				</span>
 				<br>
 				Welcome to Cassiopeia. Press WASD to navigate around the planet<span v-if="Research.has('access', 1)">,
 				and E to open the building menu</span>.
 			</div>
+			<button style="position: absolute; left: 0; bottom: 0;" onclick="Modal.show({
+				title: 'Controls',
+				bind: 'controls-menu'
+			})">
+				Controls
+			</button>
 			<div style="position: absolute; right: 0">
 				<button onclick="Modal.show({
 					title: 'Options',
@@ -60,7 +68,7 @@ function loadVue() {
 			format
 		},
 		template: `<div id="attr-container">
-			<span class="attr health">{{SPECIAL_CHARS.health}}</span>
+			<span class="attr health"></span>
 			<div class="bar-background">
 				<div :style="{
 					width: attrs.health.min(100)*2 + 'px'
@@ -95,6 +103,20 @@ function loadVue() {
 			<button class="option" onclick="player.options.showTileU = !player.options.showTileU; renderLayer2();">Show unexplored tile tooltips: {{player.options.showTileU ? "ON" : "OFF"}}</button>
 		</div>`
 	});
+	Vue.component('controls-menu', {
+		data: () => { return {
+			Research
+		}},
+		template: `<div style="text-align: center;"><br><br><br>
+		WASD/arrow keys: Move/Access building<br>
+		Shift+WASD/arrow keys: Rotate building when placing<br>
+		Space: Place building<br>
+		Escape: Close Modal/Stop placing building/Pause game<br>
+		<br>
+		<span v-if="Research.has('access', 1)">E: Open the building menu<br></span>
+		<span v-if="Research.has('access', 3)">R: Open the research menu<br></span>
+		<span v-if="Research.has('access', 4)">Q: Show the compass<br></span></div>`
+	})
 
 	loadMenus();
 	
@@ -108,6 +130,7 @@ function loadVue() {
 			notifiers,
 			Notifier,
 			Modal,
+			controls,
 			SPECIAL_CHARS
 		},
 		methods: {

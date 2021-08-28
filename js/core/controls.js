@@ -1,7 +1,6 @@
 function loadControls() {
 	window.addEventListener("keydown", function (e) {
 		let key = e.key.toLowerCase();
-		console.log(key);
 		if (typeof controls["press" + key.toUpperCase()] == "function") controls["press" + key.toUpperCase()]();
 		if (controls[key] != undefined && !Modal.showing)
 			controls[key] = true;
@@ -13,6 +12,14 @@ function loadControls() {
 	})
 
 	new Updater(function () {
+		let prevCompass = controls.compass;
+		controls.compass = (controls.q && Research.has("access", 4));
+		if (controls.compass != prevCompass) canvas.need2update = true;
+
+		let prevVision = controls.nightvision;
+		controls.nightvision = (controls.n && Research.has("access", 4));
+		if (controls.nightvision != prevVision) canvas.need0update = true;
+
 		let right = controls.d || controls.arrowright,
 			left = controls.a || controls.arrowleft,
 			up = controls.w || controls.arrowup,
@@ -40,7 +47,7 @@ function loadControls() {
 			return;
 		}
 
-		if (controls.shift) return;
+		if (controls.shift && placeData.node) return;
 
 		let {x, y} = player.pos;
 
@@ -67,6 +74,10 @@ let controls = {
 	a: false,
 	s: false,
 	d: false,
+	q: false,
+	n: false,
+	nightvision: false,
+	compass: false,
 	shift: false,
 	pressA() {
 		if (accessData.tiles.includes(2)) {
@@ -120,6 +131,9 @@ let controls = {
 	pressR() {
 		if (Research.has("access", 3)) openMenu(357, 365);
 	},
+	pressV() {
+		if (Research.has("access", 5)) openMenu(300, 300);
+	},
 	ticks: 0
 }
 
@@ -136,8 +150,8 @@ function getXYfromDir(dir) {
 	}
 }
 function checkTileAccess(x, y) {
-	if (x > 480 || x < 0) return false;
-	if (y > 480 || y < 0) return false;
+	if (x > 420 || x < 0) return false;
+	if (y > 420 || y < 0) return false;
 	return walkable.includes(map[x][y][0]);
 }
 function updateTileUsage() {
@@ -146,8 +160,8 @@ function updateTileUsage() {
 	let dirList = [0, 1, 2, 3];
 	for (let i in dirList) {
 		let [x, y] = getXYfromDir(i);
-		if (x < 0 || x > 480 || y < 0 || y > 480) return;
-		if (accessData.usable.includes(map[x][y][0])) accessData.tiles.push(Number(i));
+		if (x < 0 || x > 420 || y < 0 || y > 420) return;
+		if (MENU_DATA[map[x][y][0]]) accessData.tiles.push(Number(i));
 	}
 
 	canvas.need2update = true;

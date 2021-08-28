@@ -3,6 +3,7 @@ function getStartPlayer() {
 		loreUnlocks: {
 			start: false,
 			place: false,
+			village: false,
 			highestCleared: 0
 		},
 		pos: {
@@ -16,7 +17,8 @@ function getStartPlayer() {
 		},
 		currency: {
 			shards: D(20),
-			food: D(0)
+			food: D(0),
+			magic: D(0)
 		},
 		attributes: {
 			health: D(100),
@@ -29,6 +31,7 @@ function getStartPlayer() {
 			V: D(0),
 			x: D(0),
 			[SPECIAL_CHARS.shrine]: D(0),
+			[SPECIAL_CHARS.lure]: D(0),
 			[SPECIAL_CHARS.theta]: D(0),
 			[SPECIAL_CHARS.slashO]: D(0),
 			i: D(0)
@@ -38,6 +41,7 @@ function getStartPlayer() {
 			V: [],
 			x: [],
 			[SPECIAL_CHARS.shrine]: [],
+			[SPECIAL_CHARS.lure]: [],
 			[SPECIAL_CHARS.theta]: [],
 			[SPECIAL_CHARS.slashO]: [],
 			i: []
@@ -46,7 +50,20 @@ function getStartPlayer() {
 			drilling: 0,
 			clearing: 0,
 			access: 0,
-			trapping: 0
+			trapping: 0,
+			magic: 0,
+		},
+		enchants: [],
+		spells: {
+			temporal: {
+				time: 0
+			},
+			artemis: {
+				time: 0
+			},
+			power: {
+				time: 0
+			}
 		},
 		options: {
 			autosave: true,

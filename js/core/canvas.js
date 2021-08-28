@@ -11,11 +11,11 @@ let tileStyle = {
 	6: '#0075bd',
 	7: '#005a91',
 	8: '#004773',
-	9: '#002740',
-	A: '#000000',
-	B: '#470000',
-	C: '#7a0000',
-	D: '#a10000',
+	9: '#002760',
+	A: '#400000',
+	B: '#670000',
+	C: '#9a0000',
+	D: '#b10000',
 	E: '#db0000',
 	F: '#ff4040',
 	G: '#ff7b1c',
@@ -24,9 +24,11 @@ let tileStyle = {
 	[SPECIAL_CHARS.ohm]: '#48FF87',
 	[SPECIAL_CHARS.dia]: '#ffffff',
 	[SPECIAL_CHARS.house]: '#2288ff',
+	[SPECIAL_CHARS.gear]: '#887777',
 	[SPECIAL_CHARS.tri]: '#aaaaaa',
 	V: '#afaaee',
 	[SPECIAL_CHARS.shrine]: '#882722',
+	[SPECIAL_CHARS.lure]: '#ffff88',
 	[SPECIAL_CHARS.theta]: '#ff88ff',
 	[SPECIAL_CHARS.slashO]: '#d54aff'
 }
@@ -50,50 +52,55 @@ let canvas = {
 	need2update: false
 }
 
-const lights = [[351, 351], [357, 365]]
+const lights = [[351, 351], [357, 365], [300, 300]]
 function calcAlpha(x, y, draw = false) {
 	//return "ff";
 	let alpha = 0;
-	for (let l of lights) {
-		if (distance([x, y], l) < 15)
-			alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l))*0.35);
-	}
-
-	for (let b of player.buildings[SPECIAL_CHARS.theta]) {
-		if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
-			alpha += 0.7/(0.9 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.1);
-		} else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
-			alpha += 0.7/(0.8 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.2);
+	if (!controls.nightvision) {
+		for (let l of lights) {
+			if (distance([x, y], l) < 15)
+				alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l))*0.35);
 		}
-	}
-	for (let b of player.buildings[SPECIAL_CHARS.slashO]) {
-		if (x == b.pos.x && y == b.pos.y) {
-			alpha = 1000;
-			break;
+	
+		for (let b of player.buildings[SPECIAL_CHARS.theta]) {
+			if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
+				alpha += 0.7/(0.9 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.1);
+			} else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
+				alpha += 0.7/(0.8 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.2);
+			}
 		}
-		let ang = 0.25;
-
-		let hasTile = 0;
-		let area = 10.9;
-
-		if (distance([x, y], [b.pos.x, b.pos.y]) > area) continue;
-		let angMin = (b.meta.preset - 1)*Math.PI/2,
-			angMax = (b.meta.preset)*Math.PI/2;
-
-		let angle = (Math.atan2(x - b.pos.x, y - b.pos.y) + Math.PI*3/2) % (Math.PI*2);
-		if ((angle < angMin || angle > angMax) && !(angle == angMax % (Math.PI*2))) continue;
-		alpha += 1/(0.8 + Math.pow(distance([x, y], [b.pos.x, b.pos.y]), 1.5)*0.2);
+		for (let b of player.buildings[SPECIAL_CHARS.slashO]) {
+			if (x == b.pos.x && y == b.pos.y) {
+				alpha = 1000;
+				break;
+			}
+			let ang = 0.25;
+	
+			let hasTile = 0;
+			let area = 10.9;
+	
+			if (distance([x, y], [b.pos.x, b.pos.y]) > area) continue;
+			let angMin = (b.meta.preset - 1)*Math.PI/2,
+				angMax = (b.meta.preset)*Math.PI/2;
+	
+			let angle = (Math.atan2(x - b.pos.x, y - b.pos.y) + Math.PI*3/2) % (Math.PI*2);
+			if ((angle < angMin || angle > angMax) && !(angle == angMax % (Math.PI*2))) continue;
+			alpha += 1/(0.8 + Math.pow(distance([x, y], [b.pos.x, b.pos.y]), 1.5)*0.2);
+		}
+	
+		for (let b of player.buildings.i) {
+			if (distance([x, y], [b.pos.x, b.pos.y]) < 10)
+				alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [b.pos.x, b.pos.y]))*0.25);
+		}
+		if (distance([x, y], [player.pos.x, player.pos.y]) < 20)
+			alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [player.pos.x, player.pos.y]))*0.3);
+	
+		if (player.attributes.health.lte(80)) alpha /= (95 - player.attributes.health)/15;
+		alpha = Math.min(alpha, 1);
+	} else {
+		alpha = 1;
 	}
 
-	for (let b of player.buildings.i) {
-		if (distance([x, y], [b.pos.x, b.pos.y]) < 10)
-			alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [b.pos.x, b.pos.y]))*0.25);
-	}
-	if (distance([x, y], [player.pos.x, player.pos.y]) < 20)
-		alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [player.pos.x, player.pos.y]))*0.3);
-
-	if (player.attributes.health.lte(80)) alpha /= (95 - player.attributes.health)/15;
-	alpha = Math.min(alpha, 1);
 
 	if (draw && UNEXPLORED_DATA[map[x][y][0]]) {
 		if (map[x][y][1].lt(1)) {
@@ -178,10 +185,10 @@ function render() {
 
 	for (let i = 0; i <= width; i++) {
 		let x = i + player.pos.x - Math.floor(width/2);
-		if (x < 0 || x > 480) continue;
+		if (x < 0 || x > 420) continue;
 		for (let j = 0; j <= height; j++) {
 			let y = j + player.pos.y - Math.floor(height/2);
-			if (y < 0 || y > 480) continue;
+			if (y < 0 || y > 420) continue;
 			let tile = map[x][y][0];
 
 			if (x == player.pos.x && y == player.pos.y)
@@ -269,6 +276,30 @@ function renderLayer2() {
 		let d = darknessTooltip;
 		let [x, y] = getPosInCanvas(d[0], d[1])
 		tooltipText(ctx2, x, y, darknessTooltip[2], "top");
+	}
+	if (controls.compass) {
+		ctx2.fillStyle = "#17141188";
+		ctx2.strokeStyle = "#fff";
+		ctx2.lineWidth = 5;
+		ctx2.beginPath();
+		let [x, y] = getPosInCanvas(player.pos.x, player.pos.y);
+		y += 12.5;
+		ctx2.arc(x, y, 100, 0, Math.PI*2);
+		ctx2.fill();
+		ctx2.stroke();
+		ctx2.lineCap = "round";
+
+		for (let t of SPECIAL_TILES) {
+			if (!(t.show ?? true)) continue;
+			let distVec = [t.pos.x - player.pos.x, t.pos.y - player.pos.y];
+			distVec = distVec.map(c => c*90/distance(distVec, [0, 0]));
+
+			ctx2.strokeStyle = tileStyle[t.tile];
+			ctx2.beginPath();
+			ctx2.moveTo(x, y);
+			ctx2.lineTo(x + distVec[0], y + distVec[1]);
+			ctx2.stroke();
+		}
 	}
 }
 

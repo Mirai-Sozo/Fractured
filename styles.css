@@ -5,6 +5,7 @@
 	--c2: #fff8;
 
 	--c-shards: #1bf;
+	--c-magic: #cc66ee;
 
 	--c-power: #ff0;
 	--c-health: #f00;
@@ -102,6 +103,11 @@ button {
 	width: 30px;
 	vertical-align: middle;
 }
+.med-button {
+	height: 40px;
+	width: 50px;
+	vertical-align: middle;
+}
 .sub {
 	opacity: 0.7;
 	font-style: italic;
@@ -142,6 +148,7 @@ button {
 .modal-top {
 	text-align: left;
 	font-size: 30px;
+	height: 46px;
 	width: 100%;
 	border-bottom: 2px solid #fff;
 	display: flex;
@@ -219,6 +226,10 @@ button {
 	font-size: 24px;
 	bottom: 8px;
 }
+.magic {
+	color: var(--c-magic);
+	bottom: 5px;
+}
 
 .power {
 	background: url(images/power.png) center;
@@ -233,10 +244,20 @@ button {
 .power.attr {
 	background-size: 30px 30px;
 	height: 30px;
-	width: 30px;
 }
 .health {
-	color: var(--c-health);
+	background: url(images/heart.png) center;
+	display: inline-block;
+	vertical-align: middle;
+}
+.health.curr {
+	background-size: 20px 20px;
+	height: 20px;
+	width: 20px;
+}
+.health.attr {
+	background-size: 30px 30px;
+	height: 30px;
 }
 .healthbg {
 	background-color: var(--c-health);
@@ -292,7 +313,44 @@ button {
 	background-color: #f008;
 }
 
+/* Magic */
 
+.enchant {
+	width: 200px;
+	height: 150px;
+	margin: 2px;
+	font-size: 15px;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	vertical-align: middle;
+}
+.spell {
+	width: 160px;
+	height: 160px;
+	margin: 2px;
+	font-size: 15px;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	vertical-align: middle;
+}
+.bought {
+	background-color: #47005a;
+	cursor: default !important;
+}
+.spell.bought {
+	color: #ffa3d1;
+}
+.spell.bought > * {
+	color: #ffa3d1;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
 	width: 10px;
 }

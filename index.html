@@ -16,6 +16,7 @@
 	<script src="js/lib/modals.js"></script>
 	<script src="js/core/buildings.js"></script>
 	<script src="js/core/research.js"></script>
+	<script src="js/core/magic.js"></script>
 	<script src="js/core/menus.js"></script>
 	<script src="js/core/canvas.js"></script>
 	<script src="js/core/controls.js"></script>
@@ -35,7 +36,9 @@
 		</div>
 		<div id="c-container" onmousemove="updateUnexploredTile(event)">
 			<attributes></attributes>
-			<canvas id="c" class="c"></canvas>
+			<canvas id="c" class="c" :style="{
+				filter: 'grayscale(' + (controls.nightvision ? 0.8 : 0) +')'
+			}"></canvas>
 			<canvas id="c1" class="c"></canvas>
 			<canvas id="c2" class="c"></canvas>
 		</div>
