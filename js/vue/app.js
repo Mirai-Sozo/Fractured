@@ -25,8 +25,7 @@ function loadVue() {
 					{{format(player.currency.magic, 0)}} <span class="curr magic">*</span></span>
 				</span>
 				<br>
-				Welcome to Cassiopeia. Press WASD to navigate around the planet<span v-if="Research.has('access', 1)">,
-				and E to open the building menu</span>.
+				Welcome to Cassiopeia. Press WASD to navigate around the planet.
 			</div>
 			<button style="position: absolute; left: 0; bottom: 0;" onclick="Modal.show({
 				title: 'Controls',
