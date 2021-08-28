@@ -114,6 +114,8 @@ function calcAlpha(x, y, draw = false) {
 			alpha = alpha*map[x][y][1];
 		}
 	}
+	if (map[x][y][0] == 'x' && Building.getByPos(x, y, 'x').meta.active == false) alpha *= 0.4;
+
 	alpha = Math.round(alpha*255);
 
 	return ('0' + alpha.toString(16)).slice(-2);

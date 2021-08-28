@@ -103,10 +103,17 @@ button {
 	width: 30px;
 	vertical-align: middle;
 }
-.med-button {
+.med-button, .mobile {
 	height: 40px;
 	width: 50px;
 	vertical-align: middle;
+}
+.mobile {
+	font-size: 24px;
+	margin: 2px;
+}
+.mobile.fulltxt {
+	font-size: 18px;
 }
 .sub {
 	opacity: 0.7;

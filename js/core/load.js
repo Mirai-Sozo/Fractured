@@ -2,6 +2,7 @@ function load() {
 	setTimeout(function() {
 		let testTime = Date.now();
 		loadMap();
+		loadMobile();
 		loadPlayer();
 		loadVue();
 		let lastTick = Date.now();

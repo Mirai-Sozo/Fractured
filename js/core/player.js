@@ -72,7 +72,7 @@ function getStartPlayer() {
 		}
 	};
 }
-let saveKey = "IGJsummer-IGJ2021-ScarletDys";
+let saveKey = "IGJsummer-IGJ2021-Scarlet";
 let player;
 
 function loadPlayer() {

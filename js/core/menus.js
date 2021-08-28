@@ -192,6 +192,7 @@ function loadMenus() {
 			collect: BUILDINGS.x.collect,
 			toggleActive() {
 				this.building.meta.active = !this.building.meta.active;
+				canvas.need0update = true;
 			}
 		},
 		computed: {

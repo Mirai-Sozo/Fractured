@@ -80,26 +80,55 @@ let controls = {
 	compass: false,
 	shift: false,
 	pressA() {
+		if (paused) return;
+		if (accessData.tiles.includes(2)) {
+			openMenu(...getXYfromDir(2))
+		}
+	},
+	pressARROWLEFT() {
+		if (paused) return;
 		if (accessData.tiles.includes(2)) {
 			openMenu(...getXYfromDir(2))
 		}
 	},
 	pressW() {
+		if (paused) return;
 		if (accessData.tiles.includes(3)) {
 			openMenu(...getXYfromDir(3))
 		}
 	},
+	pressARROWUP() {
+		if (paused) return;
+		if (accessData.tiles.includes(2)) {
+			openMenu(...getXYfromDir(2))
+		}
+	},
 	pressD() {
+		if (paused) return;
 		if (accessData.tiles.includes(0)) {
 			openMenu(...getXYfromDir(0))
 		}
 	},
+	pressARROWRIGHT() {
+		if (paused) return;
+		if (accessData.tiles.includes(2)) {
+			openMenu(...getXYfromDir(2))
+		}
+	},
 	pressS() {
+		if (paused) return;
 		if (accessData.tiles.includes(1)) {
 			openMenu(...getXYfromDir(1))
 		}
 	},
+	pressARROWDOWN() {
+		if (paused) return;
+		if (accessData.tiles.includes(2)) {
+			openMenu(...getXYfromDir(2))
+		}
+	},
 	"press "() {
+		if (paused) return;
 		Building.stopPlacing();
 	},
 	arrowup: false,
@@ -107,7 +136,8 @@ let controls = {
 	arrowdown: false,
 	arrowright: false,
 	pressESCAPE() {
-		if (Modal.showing) Modal.closeFunc();
+		if (Modal.showing)
+			Modal.closeFunc();
 		else if (placeData.node) {
 			placeData.node = "";
 			canvas.need1update = true;
@@ -126,12 +156,15 @@ let controls = {
 		}
 	},
 	pressE() {
+		if (paused) return;
 		if (Research.has("access", 1)) openMenu(351, 351);
 	},
 	pressR() {
+		if (paused) return;
 		if (Research.has("access", 3)) openMenu(357, 365);
 	},
 	pressV() {
+		if (paused) return;
 		if (Research.has("access", 5)) openMenu(300, 300);
 	},
 	ticks: 0

@@ -15,10 +15,19 @@ function loadVue() {
 			Decimal,
 			Modal
 		}},
+		computed: {
+			gain() {
+				return player.buildings.V.reduce((a, b) => a.add(BUILDINGS.V.getProduction(b)
+					.mul(BUILDINGS.V.getMult(b))), D(0)).add(
+					player.buildings[SPECIAL_CHARS.tri].reduce((a, b) => a.add(BUILDINGS[SPECIAL_CHARS.tri].getProduction(b)
+					.mul(BUILDINGS[SPECIAL_CHARS.tri].getMult(b))), D(0))
+				)
+			}
+		},
 		template: `<div style="position: relative; height: 100%;">
 			<div style="position: absolute;">
 				<span style="font-size: 20px">
-					<span>{{format(player.currency.shards)}} <span class="curr shards">_</span></span>
+					<span>{{format(player.currency.shards)}} <span class="curr shards">_</span> (+{{format(gain)}}/s)</span>
 					<span v-if="Research.has('trapping', 1)"> |
 					{{format(player.currency.food, 0)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span></span>
 					<span v-if="player.loreUnlocks.village"> |
@@ -118,7 +127,8 @@ function loadVue() {
 	});
 	Vue.component('controls-menu', {
 		data: () => { return {
-			Research
+			Research,
+			Magic
 		}},
 		template: `<div style="text-align: center;"><br><br><br>
 		WASD/arrow keys: Move/Access building<br>
@@ -128,7 +138,60 @@ function loadVue() {
 		<br>
 		<span v-if="Research.has('access', 1)">E: Open the building menu<br></span>
 		<span v-if="Research.has('access', 3)">R: Open the research menu<br></span>
-		<span v-if="Research.has('access', 4)">Q: Show the compass<br></span></div>`
+		<span v-if="Research.has('access', 5)">V: Open the village menu<br></span>
+		<span v-if="Research.has('access', 4)">Q: Show the compass<br></span>
+		<span v-if="Magic.Enchants.has('l2')">N: Enable night vision<br></span></div>`
+	})
+	Vue.component('mobile-controls', {
+		data: () => { return {
+			isMobile,
+			simulateKeypress,
+			SPECIAL_CHARS,
+			tileStyle,
+			Research,
+			Magic,
+			placeData,
+			qToggle: false,
+			nToggle: false
+		}},
+		template: `<div style="position: absolute; border: 2px solid; background-color: var(--bg2); bottom: 0;" v-if="isMobile">
+			<div style="display: flex">
+				<button class="mobile" v-if="Research.has('access', 1)"
+				@mousedown="simulateKeypress('e', 'down')" @mouseup="simulateKeypress('e', 'up')">{{SPECIAL_CHARS.dia}}</button>
+				<button class="mobile" v-if="Research.has('access', 3)" style="color: #2288ff"
+				@mousedown="simulateKeypress('r', 'down')" @mouseup="simulateKeypress('r', 'up')">{{SPECIAL_CHARS.house}}</button>
+				<button class="mobile" v-if="Research.has('access', 5)" style="color: #887777"
+				@mousedown="simulateKeypress('v', 'down')" @mouseup="simulateKeypress('v', 'up')">{{SPECIAL_CHARS.gear}}</button>
+				<button class="mobile" style="visibility: hidden"></button>
+				<button class="mobile" @mousedown="simulateKeypress('escape', 'down')">Esc</button>
+			</div>
+			<div style="display: flex">
+				<button class="mobile" v-if="Research.has('access', 4)" @click="qToggle = !qToggle;
+				simulateKeypress('q', qToggle ? 'down' : 'up')">Q</button>
+				<button class="mobile" v-if="Magic.Enchants.has('l2')" @click="nToggle = !nToggle;
+				simulateKeypress('n', nToggle ? 'down' : 'up')">N</button>
+			</div>
+			<br>
+			<div style="display: flex" v-if="placeData.node">
+				<button class="mobile fulltxt" style="width: 75px;"
+				@mousedown="simulateKeypress('space', 'down')">Place</button>
+				<button class="mobile fulltxt" style="width: 75px;"
+				@mousedown="simulateKeypress('shift', 'down')" @mouseup="simulateKeypress('shift', 'up')">Shift</button>
+			</div>
+			<div style="display: flex">
+				<button class="mobile" style="visibility: hidden"></button>
+				<button class="mobile"
+				@mousedown="simulateKeypress('w', 'down')" @mouseup="simulateKeypress('w', 'up')">W</button>
+			</div>
+			<div style="display: flex">
+				<button class="mobile"
+				@mousedown="simulateKeypress('a', 'down')" @mouseup="simulateKeypress('a', 'up')">A</button>
+				<button class="mobile"
+				@mousedown="simulateKeypress('s', 'down')" @mouseup="simulateKeypress('s', 'up')">S</button>
+				<button class="mobile"
+				@mousedown="simulateKeypress('d', 'down')" @mouseup="simulateKeypress('d', 'up')">D</button>
+			</div>
+		</div>`
 	})
 
 	loadMenus();

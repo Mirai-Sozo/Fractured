@@ -109,7 +109,7 @@ const RESEARCHES = {
 			"You can press E to open the building menu at any time.",
 			"Tiles with very few resources are highlighted in red when attempting to place a drill.",
 			"You can press R to open the research menu at any time.",
-			"You can press Q to show a compass that highlights major buildings.<br><i>Useful for locating unexplored buildings.</i>",
+			"You can press Q to show a compass that points to major buildings.<br><i>Useful for locating unexplored buildings.</i>",
 			"You can press V to open the village menu at any time.",
 		],
 		cost: [
