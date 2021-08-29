@@ -42,8 +42,8 @@ let UNEXPLORED_DATA = {
 
 let EXPLORE = {
 	all(d) {
-		let testTime = Date.now();
 		let hasTile = false;
+		let testTime = Date.now();
 		for (let b of player.buildings[SPECIAL_CHARS.theta]) {
 			hasTile = EXPLORE.area(b.pos.x, b.pos.y, d) || hasTile;
 		}

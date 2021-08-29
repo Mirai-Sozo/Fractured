@@ -5,7 +5,7 @@ function loadMenus() {
 			Research,
 			SPECIAL_CHARS
 		}},
-		template: `<div style='text-align: center; overflow-y: auto; height: 454px;'>
+		template: `<div style='text-align: center; overflow-y: auto; height: 452px;'>
 			<building-ui :bId="SPECIAL_CHARS.tri" type="tile"></building-ui>
 			<building-ui :bId="'V'" type="tile" v-if="Research.has('drilling', 3)"></building-ui>
 			<building-ui :bId="'x'" type="tile"></building-ui>
@@ -19,14 +19,60 @@ function loadMenus() {
 	})
 	Vue.component('research-menu', {
 		data: () => { return {
-			player
+			player,
+			tab: "Purchases",
+			listTab: 'drilling'
 		}},
-		template: `<div style='text-align: center; overflow-y: auto; height: 454px;'>
-			<research-ui :rId="'drilling'"></research-ui>
-			<research-ui :rId="'trapping'"></research-ui>
-			<research-ui :rId="'clearing'"></research-ui>
-			<research-ui :rId="'access'"></research-ui>
-			<research-ui :rId="'magic'" v-if="player.loreUnlocks.village"></research-ui>
+		template: `<div style='height: 452px;'>
+			<div style="display: flex; height: 30px; align-items: flex-stretch;">
+				<button :style="{
+					width: '50.1%',
+					border: '2px solid #fff',
+					'margin-left': '-0.1px',
+					color: tab == 'Purchases' ? '#fff8' : '#fff'
+				}" @click="tab = 'Purchases'">
+					Purchases
+				</button>
+				<button :style="{
+					width: '50.1%',
+					border: '2px solid #fff',
+					color: tab == 'List' ? '#fff8' : '#fff'
+				}" @click="tab = 'List'">
+					List of researches
+				</button>
+			</div>
+			<div style="text-align: center; overflow-y: auto; height: 422px;" v-if="tab == 'Purchases'">
+				<research-ui :rId="'drilling'"></research-ui>
+				<research-ui :rId="'trapping'"></research-ui>
+				<research-ui :rId="'clearing'"></research-ui>
+				<research-ui :rId="'access'"></research-ui>
+				<research-ui :rId="'magic'" v-if="player.loreUnlocks.village"></research-ui>
+			</div>
+			<div style="height: 422px; display: flex;" v-else>
+				<div style="width: 138px; border-right: 2px solid; display: inline-block">
+					<button style="width: 100%; height: 30px;"
+					:class="{
+						locked: listTab == 'drilling'
+					}" @click="listTab = 'drilling'">Drilling</button>
+					<button style="width: 100%; height: 30px;"
+					:class="{
+						locked: listTab == 'trapping'
+					}" @click="listTab = 'trapping'">Trapping</button>
+					<button style="width: 100%; height: 30px;"
+					:class="{
+						locked: listTab == 'clearing'
+					}" @click="listTab = 'clearing'">Clearing</button>
+					<button style="width: 100%; height: 30px;"
+					:class="{
+						locked: listTab == 'access'
+					}" @click="listTab = 'access'">Access</button>
+					<button style="width: 100%; height: 30px;"
+					:class="{
+						locked: listTab == 'magic'
+					}" @click="listTab = 'magic'" v-if="player.loreUnlocks.village">Magick</button>
+				</div>
+				<research-list :rId="listTab"/>
+			</div>
 		</div>`
 	})
 	Vue.component('village-menu', {
@@ -53,7 +99,7 @@ function loadMenus() {
 				return rate;
 			}
 		},
-		template: `<div style='text-align: center; overflow-y: auto; height: 554px;'>
+		template: `<div style='text-align: center; overflow-y: auto; height: 552px;'>
 			<h1>Trade</h1>
 			<div style='text-align: center; position: relative;'>
 				<span style="font-size: 20px; position: absolute; right: 120px; top: 5px">

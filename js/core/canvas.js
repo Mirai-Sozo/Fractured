@@ -52,54 +52,64 @@ let canvas = {
 	need2update: false
 }
 
-const lights = [[351, 351], [357, 365], [300, 300]]
+const lights = [[351, 351], [357, 365], [300, 300]];
+function clampWithinCanvas(x, y, buffer) {
+	let [i, j] = getPosInCanvas(x, y);
+	let width = c.width,
+		height = c.height;
+	if (i <= -buffer*20) return false;
+	if (i >= width + buffer*20) return false;
+	if (j <= -buffer*25) return false;
+	if (j >= height + buffer*25) return false;
+	return true;
+}
 function calcAlpha(x, y, draw = false) {
 	//return "ff";
 	let alpha = 0;
+	let tile = map[x][y];
 	if (!controls.nightvision) {
 		for (let l of lights) {
-			if (distance([x, y], l) < 15)
+			if (distance([x, y], l) < 12)
 				alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l))*0.35);
 		}
-	
-		for (let b of player.buildings[SPECIAL_CHARS.theta]) {
+
+		for (let b of player.buildings[SPECIAL_CHARS.theta].filter(b => clampWithinCanvas(b.pos.x, b.pos.y, 4))) {
 			if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
-				alpha += 0.7/(0.9 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.1);
+				alpha = 1; break
 			} else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
-				alpha += 0.7/(0.8 + Math.pow(distGrid([x, y], [b.pos.x, b.pos.y]), 2)*0.2);
+				alpha = 1; break;
 			}
 		}
-		for (let b of player.buildings[SPECIAL_CHARS.slashO]) {
+		for (let b of player.buildings[SPECIAL_CHARS.slashO].filter(b => clampWithinCanvas(b.pos.x, b.pos.y, 11))) {
 			if (x == b.pos.x && y == b.pos.y) {
-				alpha = 1000;
+				alpha = 1;
 				break;
 			}
-			let ang = 0.25;
-	
-			let hasTile = 0;
 			let area = 10.9;
-	
+
 			if (distance([x, y], [b.pos.x, b.pos.y]) > area) continue;
 			let angMin = (b.meta.preset - 1)*Math.PI/2,
 				angMax = (b.meta.preset)*Math.PI/2;
-	
+
 			let angle = (Math.atan2(x - b.pos.x, y - b.pos.y) + Math.PI*3/2) % (Math.PI*2);
 			if ((angle < angMin || angle > angMax) && !(angle == angMax % (Math.PI*2))) continue;
-			alpha += 1/(0.8 + Math.pow(distance([x, y], [b.pos.x, b.pos.y]), 1.5)*0.2);
+			alpha = 1;
 		}
-	
-		for (let b of player.buildings.i) {
-			if (distance([x, y], [b.pos.x, b.pos.y]) < 10)
-				alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [b.pos.x, b.pos.y]))*0.25);
+
+		for (let b of player.buildings.i.filter(b => clampWithinCanvas(b.pos.x, b.pos.y, 10))) {
+			let dist = distance([x, y], [b.pos.x, b.pos.y]);
+			if (dist < 11) {
+				alpha += Math.max(0, 0.8 - Math.sqrt(dist)*0.25);
+			}
 		}
-		if (distance([x, y], [player.pos.x, player.pos.y]) < 20)
+		if (distance([x, y], [player.pos.x, player.pos.y]) < 10)
 			alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [player.pos.x, player.pos.y]))*0.3);
 	
-		if (player.attributes.health.lte(80)) alpha /= (95 - player.attributes.health)/15;
 		alpha = Math.min(alpha, 1);
 	} else {
 		alpha = 1;
 	}
+	if (player.attributes.health.lte(80)) alpha /= (95 - player.attributes.health)/15;
 
 
 	if (draw && UNEXPLORED_DATA[map[x][y][0]]) {

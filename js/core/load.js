@@ -11,6 +11,10 @@ function load() {
 			gameLoop((Date.now() - lastTick)/1000);
 			lastTick = Date.now();
 		}, 25);
+		renderInterval = setInterval(() => {
+			if (paused) return;
+			renderLoop();
+		}, 100)
 		setInterval(() => {if (player.options.autosave && !paused) save()}, 20000);
 		loadCanvas();
 		updateTileUsage();

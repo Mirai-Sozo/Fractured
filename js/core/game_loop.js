@@ -115,7 +115,8 @@ function gameLoop(d) {
 		let obj = Updater.updates[i];
 		if (obj.running) obj.func(d);
 	}
-
+}
+function renderLoop() {
 	if (canvas.need0update) {
 		render();
 		canvas.need0update = false;
@@ -130,4 +131,4 @@ function gameLoop(d) {
 	}
 }
 
-let interval, autoInterval;
+let interval, autoInterval, renderInterval;

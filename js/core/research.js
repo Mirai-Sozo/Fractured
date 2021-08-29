@@ -203,5 +203,20 @@ const Research = {
 				</span>
 			</div>`
 		})
+		Vue.component('research-list', {
+			props: ["rId"],
+			data: () => { return {
+				player
+			}},
+			computed: {
+				research() {
+					return RESEARCHES[this.rId]
+				}
+			},
+			template: `<div style="height: 422px; text-align: center; overflow-y: auto; width: 80%; display: inline-block">
+				<div class="research-segment"
+				style="justify-content: flex-start; padding: 10px;" v-for="r in research.desc.slice(0, player.research[rId])"><span v-html="r" style="text-align: left"></span></div>
+			</div>`
+		})
 	}
 }
