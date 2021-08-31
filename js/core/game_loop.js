@@ -24,6 +24,7 @@ function gameLoop(d) {
 				s.time = Math.max(0, s.time - trueDiff);
 			}
 		}
+		let prevShard = player.currency.shards;
 		for (let b of player.buildings[SPECIAL_CHARS.tri]) {
 			let tile = map[b.pos.x][b.pos.y];
 	
@@ -49,6 +50,7 @@ function gameLoop(d) {
 				b.meta = b.meta.sub(gain.div(BUILDINGS.V.usageDiv));
 			}
 		}
+		tmp.shardGain = player.currency.shards.sub(prevShard).div(trueDiff);
 		let usage = BUILDINGS.x.shardUsage;
 		for (let b of player.buildings.x) {
 			let randNum = Math.random();
@@ -132,3 +134,7 @@ function renderLoop() {
 }
 
 let interval, autoInterval, renderInterval;
+
+let tmp = {
+	shardGain: D(0)
+}

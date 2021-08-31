@@ -97,9 +97,15 @@ addEventListener('message', workerFunc)
 `
 let parseWorker = new Worker(URL.createObjectURL(new Blob( [mapSaveCode], {type:'text/javascript'} )))
 parseWorker.onmessage = function(e) {
-	localStorage.setItem(saveKey, JSON.stringify(player));
-	localStorage.setItem(saveKey + 'map', e.data);
-	Notifier.notify("Saved Game.");
+	try {
+		localStorage.setItem(saveKey, JSON.stringify(player));
+		localStorage.setItem(saveKey + 'map', e.data);
+		Notifier.notify("Saved Game.");
+	} catch {
+		localStorage.removeItem(saveKey);
+		localStorage.removeItem(saveKey + 'map');
+		Notifier.notify("SAVE FAILED: NOT ENOUGH SPACE")
+	}
 }
 function save() {
 	Notifier.notify("Saving...");

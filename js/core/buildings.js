@@ -131,7 +131,7 @@ const BUILDINGS = {
 		power: D(0),
 		currencyDisplayName: SPECIAL_CHARS.meat,
 		currencyInternalName: "food",
-		desc: `All drills in a 5x5 area produce x1.5 the <span class="curr shards">_</span> from the same reserves.`,
+		desc: `Drills in a 5x5 area produce x1.5 the <span class="curr shards">_</span> from the same reserves.<br><i class="sub">No, they don't stack.</i>`,
 		name: "Shrine",
 		canPlace(x, y) {
 			return checkTileAccess(x, y) && player.currency.food.gte(this.cost);
@@ -147,7 +147,7 @@ const BUILDINGS = {
 		power: D(0),
 		currencyDisplayName: SPECIAL_CHARS.meat,
 		currencyInternalName: "food",
-		desc: `All traps in a 5x5 area have a 20% chance of capturing instead of 10%.`,
+		desc: `Traps in a 5x5 area have a 20% chance of capturing instead of 10%.<br><i class="sub">They don't stack either.</i>`,
 		name: "Lure",
 		canPlace(x, y) {
 			return checkTileAccess(x, y) && player.currency.food.gte(this.cost);
@@ -250,7 +250,7 @@ const Building = {
 				Modal.show({
 					title: "Placing buildings",
 					text: `<br><br>
-					Use wasd to move around as normal, and the arrow keys to rotate the building in your place.<br>
+					Use wasd to move around as normal, and shift+wasd to rotate the building in your place.<br>
 					Press space to place the building, and esc to cancel.`,
 					buttons: [{
 						text: "Close",
@@ -283,7 +283,7 @@ const Building = {
 		if (placeData.nodeType == "tile") {
 			map[x][y][0] = placeData.node;
 		}
-		placeData.node = "";
+		if (!player.options.buildMultiple) placeData.node = "";
 		canvas.need0update = true;
 		canvas.need1update = true;
 		updateTileUsage();
@@ -338,7 +338,7 @@ const Building = {
 					<span :style="{color: tileStyle[bId]}" class="buildingImg">{{bId}}</span>
 					&nbsp;
 				</span>
-				<span v-html="building.name + ': ' + building.desc" style="width: 550px; font-size: 16px; text-align: left;"></span>
+				<span v-html="building.name + ': ' + building.desc" style="width: 600px; font-size: 16px; text-align: left;"></span>
 				<span style="width: 90px; font-size: 18px;">
 					<div style="margin-left: 5px; text-align: left;">
 						{{format(building.cost, 0)}}

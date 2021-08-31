@@ -229,9 +229,11 @@ button {
 
 
 .shards {
+	display: inline-block;
+	height: 0px;
 	color: var(--c-shards);
 	font-size: 24px;
-	bottom: 8px;
+	bottom: 20px;
 }
 .magic {
 	color: var(--c-magic);

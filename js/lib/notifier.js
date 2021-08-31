@@ -11,7 +11,7 @@ let Notifier = {
 			template: `<div class="notifier" :style="{
 				transform: 'translate(0, ' + Math.min(Math.sin((tick.thisTick - time)/3000 * Math.PI)*100, 40) + 'px)'
 			}" @click="notifiers.splice(id, 1)">
-				<span v-html="text"></span>
+				<span v-html="text" style="text-align: center;"></span>
 			</div>`
 		})
 		Vue.component("notifier-container", {

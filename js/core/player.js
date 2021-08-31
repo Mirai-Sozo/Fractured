@@ -68,7 +68,8 @@ function getStartPlayer() {
 		options: {
 			autosave: true,
 			showTilePopups: true,
-			showTileU: true
+			showTileU: true,
+			buildMultiple: false
 		}
 	};
 }

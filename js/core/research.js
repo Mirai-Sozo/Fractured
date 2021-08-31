@@ -44,7 +44,8 @@ const RESEARCHES = {
 			return this.bReqList[player.research.trapping];
 		},
 		get unAffordableText() {
-			return "Have at least " + this.bReq + " traps placed. Progress: " + format(player.buildingAmt.x, 0) + "/" + this.bReq;
+			return "Have at least " + this.bReq + " traps placed. Progress: " + format(player.buildingAmt.x, 0) + "/" + this.bReq +
+			(Research.has("trapping", 1) ? "" : "<br><i class='sub'>Things that are seemingly useless may not be.</i>");
 		},
 		cost: [
 			3000,
@@ -87,7 +88,7 @@ const RESEARCHES = {
 			return this.bReqList[player.research.clearing];
 		},
 		get unAffordableText() {
-			let clearText = Research.has("clearing", 2) ? ", and clear at least a 3" : "";
+			let clearText = Research.has("clearing", 2) ? ", and clear at least a <b style='color: #47b9ff'>3</b> tile." : "";
 			return "Have at least " + this.bReq + ` area clearers placed${clearText}. Progress: ` + format(player.buildingAmt[SPECIAL_CHARS.theta], 0) + "/" + this.bReq;
 		},
 		cost: [
@@ -124,7 +125,7 @@ const RESEARCHES = {
 		buy(l) {},
 		maxLvl: 5,
 		get unAffordableText() {
-			if (Research.has("access", 4)) return "Unlock a new major building.";
+			if (Research.has("access", 4)) return "Explore a new building.";
 			return "Have at least 30 drill v1s placed. Progress: " +  + format(player.buildingAmt[SPECIAL_CHARS.tri], 0) + "/30";
 		},
 		get canAfford() {
@@ -189,11 +190,11 @@ const Research = {
 					<span style="font-size: 20px;">
 						{{research.name}} {{Math.min(player.research[rId] + 1, research.maxLvl)}}
 					</span><br>
-					<span v-html="research.canAfford ? research.desc[lvl] : research.unAffordableText"
+					<span v-html="research.canAfford ? research.desc[lvl] : ('Requirement: ' + research.unAffordableText)"
 					style="font-size: 16px; text-align: left;" v-if="lvl < research.maxLvl"></span>
 					<span style="font-size: 16px; text-align: left;" v-else>(MAXED)</span>
 				</div>
-				<span style="width: 95px; font-size: 18px;" v-if="lvl < research.maxLvl">
+				<span style="width: 95px; font-size: 18px;" v-if="lvl < research.maxLvl && research.canAfford">
 					<div style="margin-left: 5px; text-align: left;">
 						{{format(research.cost[lvl], 0)}}
 						<span :class="{curr: true, [research.currencyInternalName]: true}">

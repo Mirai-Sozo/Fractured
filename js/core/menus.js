@@ -6,15 +6,22 @@ function loadMenus() {
 			SPECIAL_CHARS
 		}},
 		template: `<div style='text-align: center; overflow-y: auto; height: 452px;'>
-			<building-ui :bId="SPECIAL_CHARS.tri" type="tile"></building-ui>
+			<div style="text-align: left;">
+				<button style="height: 35px; margin: 6px;"
+				@click="player.options.buildMultiple = !player.options.buildMultiple">
+					Build multiple buildings in one go: {{player.options.buildMultiple ? "ON" : "OFF"}}
+				</button>
+			</div>
+			<building-ui :bId="SPECIAL_CHARS.tri" type="tile" style="border-top: 2px dashed var(--c2);"></building-ui>
 			<building-ui :bId="'V'" type="tile" v-if="Research.has('drilling', 3)"></building-ui>
 			<building-ui :bId="'x'" type="tile"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.shrine" type="tile" v-if="Research.has('trapping', 1)"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.lure" type="tile" v-if="Research.has('trapping', 4)"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.theta" type="tile"></building-ui>
 			<building-ui :bId="SPECIAL_CHARS.slashO" v-if="Research.has('clearing', 3)" type="tile"></building-ui>
-			<div class="building-segment" style="height: 40px; cursor: default;"></div>
-			<building-ui :bId="'i'" type="tile"></building-ui>
+			<div class="building-segment" style="height: 80px; cursor: default;"></div>
+			<building-ui :bId="'i'" type="tile" style="position: fixed; bottom: 0; width: 750px;
+			background-color: var(--bg1); border-top: 2px dashed var(--c2)"></building-ui>
 		</div>`
 	})
 	Vue.component('research-menu', {
@@ -446,7 +453,7 @@ const MENU_DATA = {
 		id: 'crystal',
 		name: 'Construction firm',
 		style: {
-			width: '700px',
+			width: '750px',
 			height: '500px'
 		}
 	},

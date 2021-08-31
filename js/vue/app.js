@@ -13,21 +13,13 @@ function loadVue() {
 			format,
 			formatWhole,
 			Decimal,
-			Modal
+			Modal,
+			tmp
 		}},
-		computed: {
-			gain() {
-				return player.buildings.V.reduce((a, b) => a.add(BUILDINGS.V.getProduction(b)
-					.mul(BUILDINGS.V.getMult(b))), D(0)).add(
-					player.buildings[SPECIAL_CHARS.tri].reduce((a, b) => a.add(BUILDINGS[SPECIAL_CHARS.tri].getProduction(b)
-					.mul(BUILDINGS[SPECIAL_CHARS.tri].getMult(b))), D(0))
-				)
-			}
-		},
 		template: `<div style="position: relative; height: 100%;">
 			<div style="position: absolute;">
 				<span style="font-size: 20px">
-					<span>{{format(player.currency.shards)}} <span class="curr shards">_</span> (+{{format(gain)}}/s)</span>
+					<span>{{format(player.currency.shards)}} <span class="curr shards">_</span> (+{{format(tmp.shardGain)}}/s)</span>
 					<span v-if="Research.has('trapping', 1)"> |
 					{{format(player.currency.food, 0)}} <span class="curr food">{{SPECIAL_CHARS.meat}}</span></span>
 					<span v-if="player.loreUnlocks.village"> |
@@ -36,7 +28,8 @@ function loadVue() {
 				<br>
 				Welcome to Cassiopeia. Press WASD to navigate around the planet.
 			</div>
-			<button style="position: absolute; left: 0; bottom: 0;" onclick="Modal.show({
+			<a href="https://discord.gg/DVy4XjB" target="newtab" style="position: absolute; left: 0; bottom: 0;">Discord</a>
+			<button style="position: absolute; right: 0; bottom: 0;" onclick="Modal.show({
 				title: 'Controls',
 				bind: 'controls-menu'
 			})">
@@ -59,9 +52,16 @@ function loadVue() {
 				})">Pause</button>
 				<button onclick="Modal.show({
 					title: 'Credits',
-					text: \`<br><br><br>
+					text: \`<br>
 					Game and Graphics: Dystopia181<br><br>
-					Inspired by: <b>Cleansed</b> by Yhvr (<a href='https://yhvr.itch.io/cleansed' target='newtab'>Link</a>)\`,
+					Inspired by: <b>Cleansed</b> by Yhvr (<a href='https://yhvr.itch.io/cleansed' target='newtab'>Link</a>)<br><br>
+					People who helped out:<br>
+					asterisk_man<br>
+					Buck<br>
+					Baboooshka<br>
+					RomanQrr<br>
+					fqwehgtui<br>
+					kajfik\`,
 					buttons: [{text: 'Close', onClick() {Modal.close()}}]
 				})">Credits</button>
 			</div>
