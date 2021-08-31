@@ -50,7 +50,7 @@ function loadMap() {
 		try {
 			map = decodeMap(localStorage.getItem(saveKey + 'map'));
 		} catch (error) {
-			map = noiseMap.map(_=>_.slice());
+			map = noiseMap.map(x => x.map(y => y.slice()));
 			console.log(error);
 		}
 	}
