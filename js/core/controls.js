@@ -28,14 +28,16 @@ function loadControls() {
 		if (right || left || up || down) {
 			controls.ticks++;
 
-			if (right) 
-				placeData.facing = 0;
-			else if (left)
-				placeData.facing = 2;
-			else if (up)
-				placeData.facing = 3;
-			else if (down) 
-				placeData.facing = 1;
+			if (controls.shift) {
+				if (right) 
+					placeData.facing = 0;
+				else if (left)
+					placeData.facing = 2;
+				else if (up)
+					placeData.facing = 3;
+				else if (down) 
+					placeData.facing = 1;
+			}
 			
 			canvas.need1update = true;
 		} else {
@@ -64,7 +66,7 @@ function loadControls() {
 			player.pos.y++;
 		}
 
-		canvas.need0update = true;
+		render();
 		updateTileUsage();
 	})
 }
@@ -99,8 +101,8 @@ let controls = {
 	},
 	pressARROWUP() {
 		if (paused) return;
-		if (accessData.tiles.includes(2)) {
-			openMenu(...getXYfromDir(2))
+		if (accessData.tiles.includes(3)) {
+			openMenu(...getXYfromDir(3))
 		}
 	},
 	pressD() {
@@ -111,8 +113,8 @@ let controls = {
 	},
 	pressARROWRIGHT() {
 		if (paused) return;
-		if (accessData.tiles.includes(2)) {
-			openMenu(...getXYfromDir(2))
+		if (accessData.tiles.includes(0)) {
+			openMenu(...getXYfromDir(0))
 		}
 	},
 	pressS() {
@@ -123,8 +125,8 @@ let controls = {
 	},
 	pressARROWDOWN() {
 		if (paused) return;
-		if (accessData.tiles.includes(2)) {
-			openMenu(...getXYfromDir(2))
+		if (accessData.tiles.includes(1)) {
+			openMenu(...getXYfromDir(1))
 		}
 	},
 	"press "() {

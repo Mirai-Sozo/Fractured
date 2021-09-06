@@ -96,7 +96,7 @@ let EXPLORE = {
 
 		if (hasTile) player.currency.shards = player.currency.shards.sub(d*BUILDINGS[SPECIAL_CHARS.theta].shardUsage/3);
 
-		return hasTile;
+		return hasTile && clampWithinCanvas(x, y, 5);
 	},
 	sector(b, d) {
 		let clearPower = Decimal.pow(2, polysoft(b.meta.power, 9)),
@@ -145,6 +145,6 @@ let EXPLORE = {
 		}
 		if (hasTile) player.currency.shards = player.currency.shards.sub(d.mul(BUILDINGS[SPECIAL_CHARS.slashO].shardUsage));
 
-		return hasTile;
+		return hasTile && clampWithinCanvas(x, y, 11);
 	}
 }

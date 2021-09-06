@@ -131,10 +131,10 @@ function loadMenus() {
 					}" @click="tradeAmt = 1">100%</button>
 				</div>
 				<button style="font-size: 20px; padding: 6px;" @click="trade(tradeAmt)">
-					{{player.currency.food.mul(tradeAmt).div(tradeRatio).floor().mul(tradeRatio)}}
+					{{format(player.currency.food.mul(tradeAmt).div(tradeRatio).floor().mul(tradeRatio), 0)}}
 					<span class="curr food">{{SPECIAL_CHARS.meat}}</span>
 					->
-					{{player.currency.food.mul(tradeAmt).div(tradeRatio).floor()}}
+					{{format(player.currency.food.mul(tradeAmt).div(tradeRatio).floor(), 0)}}
 					<span class="curr magic">*</span>
 				</button>
 

@@ -49,18 +49,23 @@ function loadCanvas() {
 let canvas = {
 	need0update: false,
 	need1update: false,
-	need2update: false
+	need2update: false,
+	objs: {
+		lights: [],
+		areaC: [],
+		sectorC: [],
+		i: []
+	}
 }
 
 const lights = [[351, 351], [357, 365], [300, 300]];
 function clampWithinCanvas(x, y, buffer) {
 	let [i, j] = getPosInCanvas(x, y);
-	let width = c.width,
-		height = c.height;
+
 	if (i <= -buffer*20) return false;
-	if (i >= width + buffer*20) return false;
+	if (i >= c.width + buffer*20) return false;
 	if (j <= -buffer*25) return false;
-	if (j >= height + buffer*25) return false;
+	if (j >= c.height + buffer*25) return false;
 	return true;
 }
 function calcAlpha(x, y, draw = false) {
@@ -68,19 +73,19 @@ function calcAlpha(x, y, draw = false) {
 	let alpha = 0;
 	let tile = map[x][y];
 	if (!controls.nightvision) {
-		for (let l of lights) {
+		for (let l of canvas.objs.lights) {
 			if (distance([x, y], l) < 12)
 				alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l))*0.35);
 		}
 
-		for (let b of player.buildings[SPECIAL_CHARS.theta].filter(b => clampWithinCanvas(b.pos.x, b.pos.y, 4))) {
+		for (let b of canvas.objs.areaC) {
 			if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
 				alpha = 1; break
 			} else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
 				alpha = 1; break;
 			}
 		}
-		for (let b of player.buildings[SPECIAL_CHARS.slashO].filter(b => clampWithinCanvas(b.pos.x, b.pos.y, 11))) {
+		for (let b of canvas.objs.sectorC) {
 			if (x == b.pos.x && y == b.pos.y) {
 				alpha = 1;
 				break;
@@ -94,9 +99,10 @@ function calcAlpha(x, y, draw = false) {
 			let angle = (Math.atan2(x - b.pos.x, y - b.pos.y) + Math.PI*3/2) % (Math.PI*2);
 			if ((angle < angMin || angle > angMax) && !(angle == angMax % (Math.PI*2))) continue;
 			alpha = 1;
+			break;
 		}
 
-		for (let b of player.buildings.i.filter(b => clampWithinCanvas(b.pos.x, b.pos.y, 10))) {
+		for (let b of canvas.objs.i) {
 			let dist = distance([x, y], [b.pos.x, b.pos.y]);
 			if (dist < 11) {
 				alpha += Math.max(0, 0.8 - Math.sqrt(dist)*0.25);
@@ -187,6 +193,7 @@ function tooltipText(context, x, y, text, arrowDir = "top") {
 }
 
 function render() {
+	let testTime = Date.now();
 	c.width = window.innerWidth - 4;
 	c.height = window.innerHeight - 114;
 	ctx.font = '25px Iosevka Term SS08 Web';
@@ -194,6 +201,11 @@ function render() {
 
 	let width = Math.floor(c.width/20),
 		height = Math.floor(c.height/25);
+
+	canvas.objs.lights = lights.filter(b => clampWithinCanvas(b[0], b[1], 12))
+	canvas.objs.areaC = player.buildings[SPECIAL_CHARS.theta].filter(b => clampWithinCanvas(b.pos.x, b.pos.y, 4))
+	canvas.objs.sectorC = player.buildings[SPECIAL_CHARS.slashO].filter(b => clampWithinCanvas(b[0], b[1], 11))
+	canvas.objs.i = player.buildings.i.filter(b => clampWithinCanvas(b[0], b[1], 10));
 
 	for (let i = 0; i <= width; i++) {
 		let x = i + player.pos.x - Math.floor(width/2);
@@ -208,36 +220,31 @@ function render() {
 
 			ctx.fillStyle = (tileStyle[tile] ?? "#ffffff") + calcAlpha(x, y, true);
 			if (Research.has("access", 2)) {
-				let sub, max;
+				let sub, max, has = true;
 				switch (placeData.node) {
 					case SPECIAL_CHARS.tri:
-						sub = BUILDINGS[SPECIAL_CHARS.tri].subConstant,
+						sub = BUILDINGS[SPECIAL_CHARS.tri].subConstant;
 						max = 1e7 - sub;
-						if (tile == getMapEmpty(x, y) && map[x][y][1] - sub < max/10) {
-							ctx.fillStyle = "#ff0000" + calcAlpha(x, y, true);
-							ctx.shadowColor = "#ff0000";
-							ctx.shadowBlur = 15;
-							tile = "-"
-						}
 
 						break;
 					case 'V':
-						sub = BUILDINGS.V.subConstant,
+						sub = BUILDINGS.V.subConstant;
 						max = 1e7 - sub;
-						if (tile == getMapEmpty(x, y) && map[x][y][1] - sub < max/10) {
-							ctx.fillStyle = "#ff0000" + calcAlpha(x, y, true);
-							ctx.shadowColor = "#ff0000";
-							ctx.shadowBlur = 15;
-							tile = "-"
-						}
 
 						break;
+					default:
+						has = false;
+						break;
+				}
+				if (has && tile == getMapEmpty(x, y) && map[x][y][1] - sub < max/10) {
+					ctx.fillStyle = "#ff0000" + calcAlpha(x, y, true);
+					tile = "-";
 				}
 			}
 			ctx.fillText(tile, i*20 + 10, j*25 + 25);
-			ctx.shadowBlur = 0;
 		}
 	}
+	console.log(Date.now() - testTime + 'ms')
 }
 
 function renderLayer1() {

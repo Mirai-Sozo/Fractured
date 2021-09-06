@@ -14,7 +14,7 @@ function load() {
 		renderInterval = setInterval(() => {
 			if (paused) return;
 			renderLoop();
-		}, 100)
+		}, 125);
 		setInterval(() => {if (player.options.autosave && !paused) save()}, 20000);
 		loadCanvas();
 		updateTileUsage();

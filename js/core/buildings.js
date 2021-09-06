@@ -262,7 +262,7 @@ const Building = {
 		}
 		placeData.nodeType = type;
 		placeData.node = id;
-		canvas.need1update = true;
+		renderLayer1();
 		if (Research.has("access", 2)) canvas.need0update = true;
 	},
 	stopPlacing() {
@@ -284,8 +284,8 @@ const Building = {
 			map[x][y][0] = placeData.node;
 		}
 		if (!player.options.buildMultiple) placeData.node = "";
-		canvas.need0update = true;
-		canvas.need1update = true;
+		render();
+		renderLayer1();
 		updateTileUsage();
 	},
 	sell(x, y, type) {
