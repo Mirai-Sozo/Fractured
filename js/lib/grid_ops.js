@@ -1,17 +1,20 @@
+"use strict";
 function distance([x1, y1], [x2, y2]) {
-  return Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+  return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
+
 function distGrid([x1, y1], [x2, y2]) {
   return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
 }
-function polysoft(v, s, m=0.7) {
-  v = D(v);
-  s = D(s);
-  if (v.lte(s)) return v;
-  else return s.mul(Decimal.pow(v.div(s), m));
+
+function polysoft(v, s, m = 0.7) {
+  const Dv = D(v);
+  const Ds = D(s);
+  if (Dv.lte(Ds)) return Dv;
+  return Ds.mul(Decimal.pow(Dv.div(Ds), m));
 }
 
-let SPECIAL_CHARS = {
+const SPECIAL_CHARS = {
   dia: LZString.decompressFromBase64("mZkQ"),
   house: LZString.decompressFromBase64("kDEQ"),
   gear: LZString.decompressFromBase64("plkQ"),
@@ -24,4 +27,4 @@ let SPECIAL_CHARS = {
   slashO: atob("2A=="),
   health: LZString.decompressFromBase64("ibkQ"),
   meat: LZString.decompressFromBase64("mXAQ")
-}
+};

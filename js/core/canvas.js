@@ -31,7 +31,8 @@ const tileStyle = {
   [SPECIAL_CHARS.shrine]: "#882722",
   [SPECIAL_CHARS.lure]: "#ffff88",
   [SPECIAL_CHARS.theta]: "#ff88ff",
-  [SPECIAL_CHARS.slashO]: "#d54aff"
+  [SPECIAL_CHARS.slashO]: "#d54aff",
+  M: "#a6a6ed",
 };
 
 function loadCanvas() {
@@ -59,7 +60,11 @@ const canvas = {
   }
 };
 
-const lights = [[351, 351], [357, 365], [300, 300]];
+const lights = [
+//  [351, 351], 
+//  [357, 365], 
+//  [300, 300]
+];
 function clampWithinCanvas(x, y, buffer) {
   const [i, j] = getPosInCanvas(x, y);
 
@@ -72,52 +77,52 @@ function clampWithinCanvas(x, y, buffer) {
 function calcAlpha(x, y, draw = false) {
   // Return "ff";
   let alpha = 0;
-  if (controls.nightvision) {
-    alpha = 1;
-  } else {
-    for (const l of canvas.objs.lights) {
-      if (distance([x, y], l) < 12)
-        alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l)) * 0.35);
-    }
-
-    for (const b of canvas.objs.areaC) {
-      if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
-        alpha = 1; 
-        break;
-      } else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
-        alpha = 1; 
-        break;
-      }
-    }
-    for (const b of canvas.objs.sectorC) {
-      if (x === b.pos.x && y === b.pos.y) {
-        alpha = 1;
-        break;
-      }
-      const area = 10.9;
-
-      if (distance([x, y], [b.pos.x, b.pos.y]) > area) continue;
-      const angMin = (b.meta.preset - 1) * Math.PI / 2,
-        angMax = (b.meta.preset) * Math.PI / 2;
-
-      const angle = (Math.atan2(x - b.pos.x, y - b.pos.y) + Math.PI * 3 / 2) % (Math.PI * 2);
-      if ((angle < angMin || angle > angMax) && !(angle === angMax % (Math.PI * 2))) continue;
-      alpha = 1;
-      break;
-    }
-
-    for (const b of canvas.objs.i) {
-      const dist = distance([x, y], [b.pos.x, b.pos.y]);
-      if (dist < 11) {
-        alpha += Math.max(0, 0.8 - Math.sqrt(dist) * 0.25);
-      }
-    }
-    if (distance([x, y], [player.pos.x, player.pos.y]) < 10)
-      alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [player.pos.x, player.pos.y])) * 0.3);
-
-    alpha = Math.min(alpha, 1);
-  }
-  if (player.attributes.health.lte(80)) alpha /= (95 - player.attributes.health) / 15;
+  // If (controls.nightvision) {
+  alpha = 1;
+  // } else {
+  // for (const l of canvas.objs.lights) {
+  //     if (distance([x, y], l) < 12)
+  //       alpha += Math.max(0, 1 - Math.sqrt(distance([x, y], l)) * 0.35);
+  // }
+  // 
+  // for (const b of canvas.objs.areaC) {
+  //     if (distGrid([x, y], [b.pos.x, b.pos.y]) < 5 && Research.has("clearing", 1)) {
+  //       alpha = 1; 
+  //       break;
+  //     } else if (distGrid([x, y], [b.pos.x, b.pos.y]) < 4) {
+  //       alpha = 1; 
+  //       break;
+  //     }
+  // }
+  // for (const b of canvas.objs.sectorC) {
+  //     if (x === b.pos.x && y === b.pos.y) {
+  //       alpha = 1;
+  //       break;
+  //     }
+  //     const area = 10.9;
+  // 
+  //     if (distance([x, y], [b.pos.x, b.pos.y]) > area) continue;
+  //     const angMin = (b.meta.preset - 1) * Math.PI / 2,
+  //       angMax = (b.meta.preset) * Math.PI / 2;
+  // 
+  //     const angle = (Math.atan2(x - b.pos.x, y - b.pos.y) + Math.PI * 3 / 2) % (Math.PI * 2);
+  //     if ((angle < angMin || angle > angMax) && !(angle === angMax % (Math.PI * 2))) continue;
+  //     alpha = 1;
+  //     break;
+  // }
+  // 
+  // for (const b of canvas.objs.i) {
+  //     const dist = distance([x, y], [b.pos.x, b.pos.y]);
+  //     if (dist < 11) {
+  //       alpha += Math.max(0, 0.8 - Math.sqrt(dist) * 0.25);
+  //     }
+  // }
+  // if (distance([x, y], [player.pos.x, player.pos.y]) < 10)
+  //     alpha += Math.max(0, 0.8 - Math.sqrt(distance([x, y], [player.pos.x, player.pos.y])) * 0.3);
+  // 
+  // alpha = Math.min(alpha, 1);
+  // } 
+  // if (player.attributes.health.lte(80)) alpha /= (95 - player.attributes.health) / 15;
 
 
   if (draw && UNEXPLORED_DATA[map[x][y][0]]) {
@@ -153,7 +158,7 @@ function getMapByCanvas(x, y) {
 function updateUnexploredTile(event) {
   const [x, y] = getMapByCanvas(event.offsetX, event.offsetY);
   darknessTooltip = [];
-  if (x < 0 || x > 400 || y < 0 || y > 400) return renderLayer2();
+  if (x < 0 || x > xDim || y < 0 || y > yDim) return renderLayer2();
 
   const tile = map[x][y];
   if (!UNEXPLORED_DATA[tile[0]] || parseInt(calcAlpha(x, y), 16) < 5) return renderLayer2();
@@ -212,14 +217,12 @@ function render() {
 
   for (let i = 0; i <= width; i++) {
     const x = i + player.pos.x - Math.floor(width / 2);
-    if (x < 0 || x > 420) continue;
+    if (x < 0 || x > xDim) continue;
     for (let j = 0; j <= height; j++) {
       const y = j + player.pos.y - Math.floor(height / 2);
-      if (y < 0 || y > 420) continue;
+      if (y < 0 || y > yDim) continue;
       let tile = map[x][y][0];
-
-      if (x === player.pos.x && y === player.pos.y)
-        tile = SPECIAL_CHARS.ohm;
+      if (x === player.pos.x && y === player.pos.y) tile = "M"; // SPECIAL_CHARS.ohm;
 
       ctx.fillStyle = (tileStyle[tile] === undefined ? "#ffffff" : tileStyle[tile]) + calcAlpha(x, y, true);
       if (Research.has("access", 2)) {
@@ -247,8 +250,9 @@ function render() {
       ctx.fillText(tile, i * 20 + 10, j * 25 + 25);
     }
   }
+  // The plan is to make the game run at 30fps. 
   // eslint-disable-next-line no-console
-  if (Date.now() - testTime > 100) console.log(`WARN: tick took ${Date.now() - testTime}ms`);
+  if (Date.now() - testTime > 33) console.log(`WARN: tick took ${Date.now() - testTime}ms`);
 }
 
 function renderLayer1() {

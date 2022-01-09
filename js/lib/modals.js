@@ -1,9 +1,10 @@
+"use strict";
 const Modal = {
   load() {
-    Vue.component('modal', {
-      data: () => { return {
+    Vue.component("modal", {
+      data: () => ({
         Modal
-      }},
+      }),
       template: `<div class="modal" v-if="Modal.showing" :style='Modal.data.style'>
         <div class="modal-top">
           <div style="border-right: 2px solid #fff; height: 40px; position: relative; width: 40px;"
@@ -19,9 +20,17 @@ const Modal = {
           <button v-for="btn in Modal.data.buttons" @click="btn.onClick" style="min-width: 75px; margin: 0 5px">{{btn.text}}</button>
         </div>
       </div>`
-    })
+    });
   },
-  show({title, text="", bind="", bindData={}, style={}, buttons=[], close=function () {Modal.close()}}) {
+  
+  show({ title, 
+    text = "", 
+    bind = "", 
+    bindData = {}, 
+    style = {}, 
+    buttons = [], 
+    close = function() { Modal.close(); } }
+  ) {
     Modal.data.title = title;
     Modal.data.text = text;
     Modal.data.bind = bind;
@@ -33,12 +42,15 @@ const Modal = {
     darknessTooltip = [];
     renderLayer2();
   },
+
   close() {
     Modal.showing = false;
   },
+
   closeFunc() {
     Modal.close();
   },
+
   showing: false,
   data: {
     title: "",

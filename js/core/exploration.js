@@ -64,8 +64,8 @@ const EXPLORE = {
     let hasTile = 0;
     const area = player.research.clearing >= 1 ? 4 : 3;
 
-    for (let i = Math.max(0, x - area); i <= Math.min(420, x + area); i++) {
-      for (let j = Math.max(0, y - area); j <= Math.min(420, y + area); j++) {
+    for (let i = Math.max(0, x - area); i <= Math.min(xDim, x + area); i++) {
+      for (let j = Math.max(0, y - area); j <= Math.min(yDim, y + area); j++) {
         const tile = map[i][j];
         if (UNEXPLORED_DATA[tile[0]]) {
           const h = UNEXPLORED_DATA[tile[0]].health;
@@ -116,10 +116,10 @@ const EXPLORE = {
     const area = 11;
 
     for (let i = Math.max(0, x - area * (secs.q2 || secs.q3)); 
-      i <= Math.min(420, x + area * (secs.q1 || secs.q4)); i++) {
+      i <= Math.min(xDim, x + area * (secs.q1 || secs.q4)); i++) {
 
       for (let j = Math.max(0, y - area * (secs.q1 || secs.q2)); 
-        j <= Math.min(420, y + area * (secs.q3 || secs.q4)); j++) {
+        j <= Math.min(yDim, y + area * (secs.q3 || secs.q4)); j++) {
 
         if (distance([x, y], [i, j]) > area) continue;
         const tile = map[i][j];

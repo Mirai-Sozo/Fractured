@@ -8,17 +8,20 @@ function getStartPlayer() {
       highestCleared: 0
     },
     pos: {
-      x: 351,
-      y: 350
+      x: 15,
+      y: 17
     },
-    map: 0,
+    map: {
+      x: 5,
+      y: 0
+    },
     time: {
       thisTick: new Date().getTime(),
       timeStat: 0
     },
     currency: {
-      shards: D(20),
-      food: D(0),
+      shards: D(2e30), // Debug, revert before commit.
+      food: D(2e30),  // Debug, revert before commit. 
       magic: D(0)
     },
     attributes: {
@@ -50,7 +53,7 @@ function getStartPlayer() {
     research: {
       drilling: 0,
       clearing: 0,
-      access: 0,
+      access: 10,
       trapping: 0,
       magic: 0,
     },

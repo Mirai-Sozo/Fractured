@@ -63,7 +63,6 @@
     "no-with": "error",
     "radix": "warn",
     "require-await": "error",
-    "require-unicode-regexp": "error",
     "wrap-iife": "error",
     "yoda": "error",
     "no-label-var": "error",

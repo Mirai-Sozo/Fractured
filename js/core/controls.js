@@ -162,15 +162,15 @@ const controls = {
   },
   pressE() {
     if (paused) return;
-    if (Research.has("access", 1)) openMenu(351, 351);
+    if (Research.has("access", 1)) openMenu(9, 10);
   },
   pressR() {
     if (paused) return;
-    if (Research.has("access", 3)) openMenu(357, 365);
+    if (Research.has("access", 3)) openMenu(17, 15);
   },
   pressV() {
     if (paused) return;
-    if (Research.has("access", 5)) openMenu(300, 300);
+    if (Research.has("access", 5)) openMenu(30, 30);
   },
   ticks: 0
 };
@@ -190,8 +190,8 @@ function getXYfromDir(dir) {
   }
 }
 function checkTileAccess(x, y) {
-  if (x > 420 || x < 0) return false;
-  if (y > 420 || y < 0) return false;
+  if (x > xDim || x < 0) return false;
+  if (y > yDim || y < 0) return false;
   return walkable.includes(map[x][y][0]);
 }
 function updateTileUsage() {
@@ -200,7 +200,7 @@ function updateTileUsage() {
   const dirList = [0, 1, 2, 3];
   for (const i in dirList) {
     const [x, y] = getXYfromDir(i);
-    if (x < 0 || x > 420 || y < 0 || y > 420) return;
+    if (x < 0 || x > xDim || y < 0 || y > yDim) return;
     if (MENU_DATA[map[x][y][0]]) accessData.tiles.push(Number(i));
   }
 

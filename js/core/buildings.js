@@ -255,7 +255,9 @@ const Building = {
         Use wasd to move around as normal, and shift+wasd to rotate the building in its place.<br>
         Press space to place the building, and esc to cancel.`,
         // eslint-disable-next-line no-empty-function
-        close() {}
+        close() {
+          // Nothing
+        }
       });
       setTimeout(() => {
         Modal.show({

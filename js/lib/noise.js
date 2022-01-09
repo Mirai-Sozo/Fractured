@@ -4,7 +4,7 @@ function randomNoiseBit() {
   return (s % d) / d;
 }
 const d = 7919;
-const v = 1299709;
+const v = 1299000 + Math.floor(1000 * Math.random());
 let s = 0;
 
 function Noise(x, y, scalar = 1) {

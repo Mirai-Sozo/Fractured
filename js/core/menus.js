@@ -494,7 +494,7 @@ const MENU_DATA = {
           }],
           close() {
             player.loreUnlocks.village = true;
-            openMenu(300, 300);
+            openMenu(30, 30);
           }
         });
       }
